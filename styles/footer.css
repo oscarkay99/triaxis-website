@@ -24,8 +24,24 @@
 .footer-social-btn:hover { background: var(--brown); color: #fff; border-color: var(--brown); }
 .footer-col h4 { font-size: 0.9rem; font-weight: 700; color: var(--dark); margin-bottom: 16px; }
 .footer-col ul { display: flex; flex-direction: column; gap: 9px; }
-.footer-col a { font-size: 0.85rem; color: var(--text-muted); transition: color 0.2s; }
+.footer-col a {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
 .footer-col a:hover { color: var(--brown); }
+.footer-link-group {
+  color: var(--dark);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+.footer-legal-link { font-weight: 400; transition: color 0.2s; }
 .footer-bottom { border-top: 1px solid var(--border); padding: 20px 0; }
 .footer-bottom-inner {
   display: flex; align-items: center; justify-content: space-between;
