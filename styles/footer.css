@@ -4,7 +4,15 @@
   display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 48px;
   padding: 64px 0 48px;
 }
-.footer-logo { margin-bottom: 14px; }
+.footer-logo {
+  width: fit-content;
+  margin-bottom: 14px;
+}
+:root[data-theme="night"] .footer-logo {
+  background: rgba(255,255,255,0.96);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
 .footer-brand p { font-size: 0.87rem; color: var(--text-muted); line-height: 1.65; margin-bottom: 20px; }
 .footer-socials { display: flex; gap: 8px; }
 .footer-social-btn {
