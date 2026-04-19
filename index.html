@@ -900,6 +900,42 @@
     </div>
   </footer>
 
+  <!-- CHATBOT WIDGET -->
+  <div id="cb-widget" aria-label="TriAxis chat assistant">
+    <div id="cb-window" role="dialog" aria-label="Chat with TriAxis" aria-modal="true">
+      <div id="cb-header">
+        <div class="cb-header-info">
+          <div class="cb-avatar">TX</div>
+          <div>
+            <p class="cb-header-name">TriAxis Assistant</p>
+            <p class="cb-header-status">Online</p>
+          </div>
+        </div>
+        <button id="cb-close" aria-label="Close chat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="cb-log" role="log" aria-live="polite">
+        <div class="cb-msg cb-msg--assistant">
+          <div class="cb-bubble">Hi! I'm the TriAxis assistant. Ask me anything about our services, pricing, or how to get started.</div>
+        </div>
+      </div>
+      <form id="cb-form" autocomplete="off">
+        <input id="cb-input" type="text" placeholder="Ask about our services…" aria-label="Type your message" maxlength="300" />
+        <button id="cb-send" type="submit" aria-label="Send message">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </form>
+    </div>
+    <div id="cb-launcher">
+      <span id="cb-label">Chat with us</span>
+      <button id="cb-toggle" aria-label="Open chat" aria-expanded="false" aria-controls="cb-window">
+        <svg id="cb-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <svg id="cb-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
   <script type="module" src="main.js"></script>
 </body>
 </html>
