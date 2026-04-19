@@ -18,7 +18,7 @@
 .values-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
 .value-card {
   display: flex; gap: 12px; align-items: flex-start;
-  background: #fff; padding: 16px; border-radius: var(--radius-sm);
+  background: var(--surface); padding: 16px; border-radius: var(--radius-sm);
   border: 1px solid var(--border);
 }
 .value-icon {

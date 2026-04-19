@@ -3,10 +3,11 @@
 html { scroll-behavior: smooth; }
 body {
   font-family: 'Inter', sans-serif;
-  background: #f6f9fc;
-  color: #0a2948;
+  background: var(--cream);
+  color: var(--text);
   line-height: 1.6;
   overflow-x: hidden;
+  transition: background 0.25s, color 0.25s;
 }
 img { max-width: 100%; display: block; }
 a { text-decoration: none; color: inherit; }
@@ -26,10 +27,42 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   --text-muted: #5f7184;
   --border: #d7e2ec;
   --surface: #fff;
+  --surface-soft: #fdfefe;
+  --nav-bg: rgba(255,255,255,0.96);
+  --nav-bg-scrolled: rgba(255,255,255,0.98);
+  --nav-shadow: 0 1px 18px rgba(0,45,85,0.08);
+  --nav-shadow-scrolled: 0 1px 24px rgba(0,45,85,0.12);
+  --input-bg: #f7fafc;
+  --tag-bg: #fff3ea;
+  --accent-soft: #fff6ef;
   --radius: 14px;
   --radius-sm: 8px;
   --shadow: 0 2px 16px rgba(0,45,85,0.08);
   --shadow-lg: 0 8px 40px rgba(0,45,85,0.14);
+}
+
+:root[data-theme="night"] {
+  --brown: #ff8a32;
+  --brown-dark: #f47a20;
+  --brown-light: #ffc08a;
+  --cream: #071727;
+  --cream-2: #0c2237;
+  --dark: #f5f9fc;
+  --dark-2: #06111f;
+  --text: #e7f1f8;
+  --text-muted: #9fb4c5;
+  --border: #1d3a52;
+  --surface: #0e263d;
+  --surface-soft: #102c46;
+  --nav-bg: rgba(7,23,39,0.94);
+  --nav-bg-scrolled: rgba(7,23,39,0.98);
+  --nav-shadow: 0 1px 22px rgba(0,0,0,0.28);
+  --nav-shadow-scrolled: 0 1px 28px rgba(0,0,0,0.38);
+  --input-bg: #0a1e31;
+  --tag-bg: rgba(255,138,50,0.14);
+  --accent-soft: rgba(255,138,50,0.1);
+  --shadow: 0 2px 18px rgba(0,0,0,0.22);
+  --shadow-lg: 0 12px 44px rgba(0,0,0,0.32);
 }
 
 /* ===== UTILITIES ===== */
@@ -45,7 +78,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 
 .section-tag {
   display: inline-block;
-  background: #fff3ea;
+  background: var(--tag-bg);
   color: var(--brown);
   font-size: 0.8rem;
   font-weight: 600;
@@ -79,7 +112,43 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .btn-outline-light { background: rgba(255,255,255,0.12); color: #fff; border: 1.5px solid rgba(255,255,255,0.4); }
 .btn-outline-light:hover { background: rgba(255,255,255,0.2); }
 .btn-outline-dark { background: transparent; color: var(--dark); border: 1.5px solid var(--border); }
-.btn-outline-dark:hover { background: #fff3ea; border-color: var(--brown); color: var(--brown); }
+.btn-outline-dark:hover { background: var(--tag-bg); border-color: var(--brown); color: var(--brown); }
 .btn-featured { background: var(--brown); color: #fff; width: 100%; }
 .btn-featured:hover { background: var(--brown-dark); }
 .btn-full { width: 100%; padding: 14px; font-size: 1rem; }
+
+:root[data-theme="night"] .about,
+:root[data-theme="night"] .portfolio,
+:root[data-theme="night"] .pricing,
+:root[data-theme="night"] .contact {
+  background: var(--cream);
+}
+
+:root[data-theme="night"] .service-card,
+:root[data-theme="night"] .portfolio-card,
+:root[data-theme="night"] .team-card,
+:root[data-theme="night"] .pricing-card,
+:root[data-theme="night"] .value-card,
+:root[data-theme="night"] .faq-item,
+:root[data-theme="night"] .contact-form-wrap {
+  background: var(--surface);
+}
+
+:root[data-theme="night"] .footer,
+:root[data-theme="night"] .toggle-btn.active,
+:root[data-theme="night"] .filter-btn,
+:root[data-theme="night"] .footer-social-btn {
+  background: var(--surface);
+}
+
+:root[data-theme="night"] .service-card-accent {
+  background: linear-gradient(180deg, var(--surface) 0%, rgba(255,138,50,0.08) 100%);
+  border-color: rgba(255,138,50,0.28);
+}
+
+:root[data-theme="night"] .form-group input,
+:root[data-theme="night"] .form-group select,
+:root[data-theme="night"] .form-group textarea {
+  background: var(--input-bg);
+  color: var(--text);
+}

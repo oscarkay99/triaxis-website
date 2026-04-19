@@ -2,7 +2,7 @@
 .services { background: var(--cream-2); }
 .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .service-card {
-  background: #fff; border-radius: var(--radius);
+  background: var(--surface); border-radius: var(--radius);
   padding: 28px; border: 1px solid var(--border);
   transition: transform 0.2s, box-shadow 0.2s;
 }

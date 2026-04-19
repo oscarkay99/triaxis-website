@@ -2,7 +2,7 @@
 .team { background: var(--cream-2); }
 .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
 .team-card {
-  background: #fff; border-radius: var(--radius);
+  background: var(--surface); border-radius: var(--radius);
   overflow: hidden; border: 1px solid var(--border);
   transition: transform 0.2s, box-shadow 0.2s;
 }
