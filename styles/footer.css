@@ -23,9 +23,34 @@
 }
 .footer-social-btn:hover { background: var(--brown); color: #fff; border-color: var(--brown); }
 .footer-col h4 { font-size: 0.9rem; font-weight: 700; color: var(--dark); margin-bottom: 16px; }
-.footer-col ul { display: flex; flex-direction: column; gap: 9px; }
-.footer-col a { font-size: 0.85rem; color: var(--text-muted); transition: color 0.2s; }
+.footer-col ul { display: flex; flex-direction: column; gap: 7px; }
+.footer-col a {
+  display: inline-flex;
+  width: fit-content;
+  min-height: 28px;
+  align-items: center;
+  padding: 2px 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  transition: color 0.2s, background 0.2s, padding 0.2s;
+}
 .footer-col a:hover { color: var(--brown); }
+.footer-link-group {
+  color: var(--dark);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-top: 8px;
+  text-transform: uppercase;
+}
+.footer-legal-link {
+  border-radius: 8px;
+  font-weight: 650;
+}
+.footer-legal-link:hover {
+  background: var(--tag-bg);
+  padding: 2px 10px;
+}
 .footer-bottom { border-top: 1px solid var(--border); padding: 20px 0; }
 .footer-bottom-inner {
   display: flex; align-items: center; justify-content: space-between;
