@@ -1,5 +1,5 @@
 /* ===== FOOTER ===== */
-.footer { background: var(--cream-2); border-top: 1px solid var(--border); }
+.footer { background: #fff; border-top: 1px solid var(--border); }
 .footer-grid {
   display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 48px;
   padding: 64px 0 48px;

@@ -17,14 +17,15 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 :root {
   --brown: #f47a20;
   --brown-dark: #d95f0f;
-  --brown-light: #ff9a3d;
-  --cream: #f6f9fc;
-  --cream-2: #eaf1f7;
+  --brown-light: #ffb06a;
+  --cream: #f7fafc;
+  --cream-2: #edf4f9;
   --dark: #002d55;
   --dark-2: #061c33;
   --text: #0a2948;
   --text-muted: #5f7184;
   --border: #d7e2ec;
+  --surface: #fff;
   --radius: 14px;
   --radius-sm: 8px;
   --shadow: 0 2px 16px rgba(0,45,85,0.08);
@@ -44,7 +45,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 
 .section-tag {
   display: inline-block;
-  background: var(--cream-2);
+  background: #fff3ea;
   color: var(--brown);
   font-size: 0.8rem;
   font-weight: 600;
@@ -78,7 +79,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 .btn-outline-light { background: rgba(255,255,255,0.12); color: #fff; border: 1.5px solid rgba(255,255,255,0.4); }
 .btn-outline-light:hover { background: rgba(255,255,255,0.2); }
 .btn-outline-dark { background: transparent; color: var(--dark); border: 1.5px solid var(--border); }
-.btn-outline-dark:hover { background: var(--cream-2); border-color: var(--brown); color: var(--brown); }
+.btn-outline-dark:hover { background: #fff3ea; border-color: var(--brown); color: var(--brown); }
 .btn-featured { background: var(--brown); color: #fff; width: 100%; }
 .btn-featured:hover { background: var(--brown-dark); }
 .btn-full { width: 100%; padding: 14px; font-size: 1rem; }

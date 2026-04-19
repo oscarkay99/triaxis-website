@@ -2,13 +2,17 @@
 .services { background: var(--cream-2); }
 .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .service-card {
-  background: var(--card-bg, #fff); border-radius: var(--radius);
+  background: #fff; border-radius: var(--radius);
   padding: 28px; border: 1px solid var(--border);
   transition: transform 0.2s, box-shadow 0.2s;
 }
+.service-card-accent {
+  background: linear-gradient(180deg, #fff 0%, #fff6ef 100%);
+  border-color: #f5d5bd;
+}
 .service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 .service-icon {
-  width: 48px; height: 48px; background: #fff;
+  width: 48px; height: 48px; background: var(--cream-2);
   border-radius: 12px; display: flex; align-items: center; justify-content: center;
   margin-bottom: 18px; color: var(--brown); box-shadow: var(--shadow);
 }
