@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cookie Policy | TriAxis Technologies</title>
+  <meta name="description" content="Cookie Policy for TriAxis Technologies, including local storage, preferences, analytics, and future chatbot integrations." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://oscarkay99.github.io/triaxis-website/cookies.html" />
+  <link rel="icon" type="image/svg+xml" href="assets/meta/favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/meta/apple-touch-icon.png" />
+  <script>
+    (() => {
+      const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
+      try {
+        document.documentElement.dataset.theme = localStorage.getItem('triaxis-theme') || preferredTheme;
+      } catch {
+        document.documentElement.dataset.theme = preferredTheme;
+      }
+    })();
+  </script>
+  <script type="module" src="legal.js"></script>
+</head>
+<body>
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><img src="assets/triaxis-logo-transparent.png" alt="TriAxis Technologies" class="brand-logo" /></a>
+      <ul class="nav-links">
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#portfolio">Portfolio</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <a href="index.html#contact" class="btn btn-primary nav-cta">Get a Free Quote</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to night mode" aria-pressed="false">
+        <span class="theme-toggle-track"><span class="theme-toggle-icon theme-toggle-sun" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span><span class="theme-toggle-icon theme-toggle-moon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span><span class="theme-toggle-thumb"></span></span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="legal-page">
+    <header class="legal-hero">
+      <div class="container">
+        <div class="section-tag">Legal</div>
+        <h1>Cookie Policy</h1>
+        <p>How this website uses browser storage, cookies, and similar technologies.</p>
+        <p class="legal-updated">Last updated: April 19, 2026</p>
+      </div>
+    </header>
+
+    <div class="legal-content">
+      <div class="container">
+        <article class="legal-document">
+          <p class="legal-note">This policy should be updated if analytics, advertising pixels, embedded maps, third-party chat, or external AI services are added.</p>
+
+          <section>
+            <h2>1. What Cookies Are</h2>
+            <p>Cookies are small files stored by your browser. Similar technologies include local storage, session storage, pixels, and scripts that remember preferences or help understand website usage.</p>
+          </section>
+
+          <section>
+            <h2>2. Current Website Storage</h2>
+            <p>The current website uses local storage to remember your day/night mode preference. This improves your browsing experience and does not require an account.</p>
+          </section>
+
+          <section>
+            <h2>3. Chatbot Storage</h2>
+            <p>The current chatbot is a local scripted assistant. It does not currently store chatbot conversations in a backend or send them to an external AI provider. If this changes, the Privacy Policy and this Cookie Policy should be updated.</p>
+          </section>
+
+          <section>
+            <h2>4. Analytics and Third-Party Cookies</h2>
+            <p>At this stage, the website codebase does not include analytics or advertising pixels. If tools such as Google Analytics, Meta Pixel, embedded videos, maps, or third-party chat widgets are added later, they may set their own cookies.</p>
+          </section>
+
+          <section>
+            <h2>5. Managing Cookies</h2>
+            <p>You can control cookies through your browser settings. You can also clear local storage to reset the website theme preference.</p>
+          </section>
+
+          <section>
+            <h2>6. Contact</h2>
+            <p>Questions about cookies can be sent to <a href="mailto:hello@triaxis.tech">hello@triaxis.tech</a>.</p>
+          </section>
+
+          <div class="legal-actions">
+            <a href="privacy.html" class="btn btn-outline-dark">Privacy Policy</a>
+            <a href="terms.html" class="btn btn-outline-dark">Terms & Conditions</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-bottom-inner">
+      <p>© 2026 TriAxis Technologies. All rights reserved.</p>
+      <p class="footer-contact-info"><a href="index.html">Back to website</a></p>
+    </div>
+  </footer>
+</body>
+</html>
