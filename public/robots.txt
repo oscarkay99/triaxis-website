@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://oscarkay99.github.io/triaxis-website/sitemap.xml

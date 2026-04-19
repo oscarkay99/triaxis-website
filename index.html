@@ -4,6 +4,57 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TriAxis IT Solutions</title>
+  <meta name="description" content="TriAxis Technologies builds practical software, cloud, cybersecurity, data, and IT consulting solutions for growing businesses." />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="TriAxis Technologies" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#071727" media="(prefers-color-scheme: dark)" />
+  <link rel="canonical" href="https://oscarkay99.github.io/triaxis-website/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="TriAxis Technologies" />
+  <meta property="og:title" content="TriAxis Technologies | IT Solutions That Work For You" />
+  <meta property="og:description" content="End-to-end technology solutions across software development, cloud, cybersecurity, data, and IT consulting." />
+  <meta property="og:url" content="https://oscarkay99.github.io/triaxis-website/" />
+  <meta property="og:image" content="https://oscarkay99.github.io/triaxis-website/assets/meta/social-preview.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="TriAxis Technologies logo" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="TriAxis Technologies | IT Solutions That Work For You" />
+  <meta name="twitter:description" content="Software, cloud, cybersecurity, data, and IT consulting solutions for growing businesses." />
+  <meta name="twitter:image" content="https://oscarkay99.github.io/triaxis-website/assets/meta/social-preview.png" />
+  <link rel="icon" type="image/svg+xml" href="assets/meta/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/meta/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/meta/apple-touch-icon.png" />
+  <link rel="manifest" href="site.webmanifest" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "TriAxis Technologies",
+      "url": "https://oscarkay99.github.io/triaxis-website/",
+      "logo": "https://oscarkay99.github.io/triaxis-website/assets/triaxis-logo-transparent.png",
+      "foundingDate": "2020",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Accra",
+        "addressCountry": "GH"
+      },
+      "email": "hello@triaxis.tech",
+      "telephone": "+233 30 123 4567",
+      "sameAs": []
+    }
+  </script>
+  <script>
+    (() => {
+      const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
+      try {
+        document.documentElement.dataset.theme = localStorage.getItem('triaxis-theme') || preferredTheme;
+      } catch {
+        document.documentElement.dataset.theme = preferredTheme;
+      }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -14,15 +65,7 @@
   <nav class="navbar" id="navbar">
     <div class="nav-container">
       <a href="#" class="nav-logo">
-        <div class="logo-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
-            <rect x="2" y="2" width="9" height="9" rx="1"/>
-            <rect x="13" y="2" width="9" height="9" rx="1"/>
-            <rect x="2" y="13" width="9" height="9" rx="1"/>
-            <rect x="13" y="13" width="9" height="9" rx="1"/>
-          </svg>
-        </div>
-        <span>Tri<strong>Axis</strong></span>
+        <img src="assets/triaxis-logo-transparent.png" alt="TriAxis Technologies" class="brand-logo" />
       </a>
       <ul class="nav-links">
         <li><a href="#services">Services</a></li>
@@ -33,6 +76,22 @@
         <li><a href="#contact">Contact</a></li>
       </ul>
       <a href="#contact" class="btn btn-primary nav-cta">Get a Free Quote</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to night mode" aria-pressed="false">
+        <span class="theme-toggle-track">
+          <span class="theme-toggle-icon theme-toggle-sun" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+          </span>
+          <span class="theme-toggle-icon theme-toggle-moon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </span>
+          <span class="theme-toggle-thumb"></span>
+        </span>
+      </button>
       <button class="hamburger" id="hamburger" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
@@ -44,7 +103,7 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <div class="hero-badge">
-        <span class="badge-dot"></span> Trusted IT Partner Since 2012
+        <span class="badge-dot"></span> Trusted IT Partner Since 2020
       </div>
       <h1>Technology That<br /><span class="text-accent">Works For You</span></h1>
       <p>TriAxis delivers end-to-end IT solutions, from software development and cloud infrastructure to cybersecurity and IT consulting, tailored to help your business grow.</p>
@@ -55,7 +114,7 @@
     </div>
     <div class="hero-stats">
       <div class="stat-item">
-        <span class="stat-number" data-target="200">0</span><span>+</span>
+        <span class="stat-number" data-target="100">0</span><span>+</span>
         <span class="stat-label">Projects Delivered</span>
       </div>
       <div class="stat-item">
@@ -63,11 +122,11 @@
         <span class="stat-label">Client Satisfaction</span>
       </div>
       <div class="stat-item">
-        <span class="stat-number" data-target="12">0</span><span>+</span>
+        <span class="stat-number" data-target="5">0</span><span>+</span>
         <span class="stat-label">Years Experience</span>
       </div>
       <div class="stat-item">
-        <span class="stat-number" data-target="50">0</span><span>+</span>
+        <span class="stat-number" data-target="20">0</span><span>+</span>
         <span class="stat-label">Expert Team Members</span>
       </div>
     </div>
@@ -84,15 +143,15 @@
       <div class="about-image-wrap">
         <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=700&q=80" alt="TriAxis team meeting" class="about-img" />
         <div class="about-badge">
-          <span class="about-badge-num">12+</span>
+          <span class="about-badge-num">5+</span>
           <span class="about-badge-text">Years of delivering IT excellence across Africa and beyond</span>
         </div>
       </div>
       <div class="about-content">
         <div class="section-tag">About TriAxis</div>
         <h2>We Make Technology<br /><span class="text-accent">Feel Human</span></h2>
-        <p>Founded in 2012, TriAxis IT Solutions has grown from a small consultancy into a full-service technology partner trusted by over 200 businesses. We believe technology should empower people, not overwhelm them.</p>
-        <p>Our team of 50+ engineers, designers, and strategists brings deep expertise across industries including finance, healthcare, retail, and logistics. We combine technical excellence with genuine care for our clients' outcomes.</p>
+        <p>Founded in 2020, TriAxis IT Solutions has grown from a focused consultancy into a full-service technology partner trusted by growing businesses. We believe technology should empower people, not overwhelm them.</p>
+        <p>Our team of 20+ engineers, designers, and strategists brings deep expertise across industries including finance, healthcare, retail, and logistics. We combine technical excellence with genuine care for our clients' outcomes.</p>
         <div class="values-grid">
           <div class="value-card">
             <div class="value-icon">
@@ -144,7 +203,7 @@
         <p>From strategy to execution, we provide comprehensive technology solutions that help businesses thrive in the digital age.</p>
       </div>
       <div class="services-grid">
-        <div class="service-card" style="--card-bg: #f5f0e8;">
+        <div class="service-card">
           <div class="service-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
           </div>
@@ -154,7 +213,7 @@
             <span class="tag">Web Apps</span><span class="tag">Mobile</span><span class="tag">APIs</span><span class="tag">SaaS</span>
           </div>
         </div>
-        <div class="service-card" style="--card-bg: #edf4f0;">
+        <div class="service-card service-card-accent">
           <div class="service-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-4V6"/><path d="M14 10l7-7"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="17 21 17 13 21 13"/></svg>
           </div>
@@ -164,7 +223,7 @@
             <span class="tag">AWS</span><span class="tag">Azure</span><span class="tag">Docker</span><span class="tag">Kubernetes</span>
           </div>
         </div>
-        <div class="service-card" style="--card-bg: #f0eef8;">
+        <div class="service-card">
           <div class="service-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
           </div>
@@ -174,7 +233,7 @@
             <span class="tag">Pen Testing</span><span class="tag">GDPR</span><span class="tag">ISO 27001</span><span class="tag">SOC 2</span>
           </div>
         </div>
-        <div class="service-card" style="--card-bg: #f5f0e8;">
+        <div class="service-card">
           <div class="service-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
           </div>
@@ -184,7 +243,7 @@
             <span class="tag">ETL</span><span class="tag">Power BI</span><span class="tag">BigQuery</span><span class="tag">ML</span>
           </div>
         </div>
-        <div class="service-card" style="--card-bg: #edf4f0;">
+        <div class="service-card service-card-accent">
           <div class="service-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
@@ -194,7 +253,7 @@
             <span class="tag">Digital Transformation</span><span class="tag">Roadmap</span><span class="tag">Governance</span>
           </div>
         </div>
-        <div class="service-card" style="--card-bg: #f0eef8;">
+        <div class="service-card">
           <div class="service-icon">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
           </div>
@@ -361,7 +420,6 @@
           <div class="stars">★★★★★</div>
           <blockquote>"TriAxis transformed our entire banking infrastructure. They didn't just deliver code — they became true partners who understood our business deeply. The platform they built handles 80,000+ users flawlessly."</blockquote>
           <div class="testimonial-author">
-            <img src="https://i.pravatar.cc/60?img=11" alt="James Osei" />
             <div>
               <strong>James Osei</strong>
               <span>CEO, PaySwift Finance</span>
@@ -372,7 +430,6 @@
           <div class="stars">★★★★★</div>
           <blockquote>"The MediTrack app exceeded our expectations. Patient satisfaction scores jumped 40% and our clinical staff now have real-time data at their fingertips. TriAxis delivered on time and within budget."</blockquote>
           <div class="testimonial-author">
-            <img src="https://i.pravatar.cc/60?img=5" alt="Dr. Efua Darko" />
             <div>
               <strong>Dr. Efua Darko</strong>
               <span>CMO, MediTrack Clinics</span>
@@ -383,7 +440,6 @@
           <div class="stars">★★★★★</div>
           <blockquote>"Moving our supply chain to the cloud seemed daunting, but TriAxis made it seamless. We cut costs by 60% and our operations are now faster and more reliable than ever before."</blockquote>
           <div class="testimonial-author">
-            <img src="https://i.pravatar.cc/60?img=15" alt="Samuel Adjei" />
             <div>
               <strong>Samuel Adjei</strong>
               <span>COO, LogiCorp Ltd</span>
@@ -394,7 +450,6 @@
           <div class="stars">★★★★★</div>
           <blockquote>"Our retail data was a mess before TriAxis stepped in. Now we have real-time dashboards that actually help us make better buying decisions. The ROI has been extraordinary."</blockquote>
           <div class="testimonial-author">
-            <img src="https://i.pravatar.cc/60?img=9" alt="Akosua Frimpong" />
             <div>
               <strong>Akosua Frimpong</strong>
               <span>Director, RetailMax Group</span>
@@ -405,7 +460,6 @@
           <div class="stars">★★★★★</div>
           <blockquote>"TriAxis built us an LMS that our students actually love using. Completion rates went from 45% to 92%. Their team was responsive, creative, and technically brilliant throughout the whole project."</blockquote>
           <div class="testimonial-author">
-            <img src="https://i.pravatar.cc/60?img=20" alt="Emmanuel Tetteh" />
             <div>
               <strong>Emmanuel Tetteh</strong>
               <span>Founder, EduFirst Academy</span>
@@ -423,11 +477,11 @@
         </button>
       </div>
       <div class="testimonial-thumbnails" id="testimonialThumbs">
-        <button class="thumb active" data-index="0"><img src="https://i.pravatar.cc/40?img=11" alt="James Osei" /><span>James Osei</span></button>
-        <button class="thumb" data-index="1"><img src="https://i.pravatar.cc/40?img=5" alt="Dr. Efua Darko" /><span>Dr. Efua Darko</span></button>
-        <button class="thumb" data-index="2"><img src="https://i.pravatar.cc/40?img=15" alt="Samuel Adjei" /><span>Samuel Adjei</span></button>
-        <button class="thumb" data-index="3"><img src="https://i.pravatar.cc/40?img=9" alt="Akosua Frimpong" /><span>Akosua Frimpong</span></button>
-        <button class="thumb" data-index="4"><img src="https://i.pravatar.cc/40?img=20" alt="Emmanuel Tetteh" /><span>Emmanuel Tetteh</span></button>
+        <button class="thumb active" data-index="0"><span>James Osei</span></button>
+        <button class="thumb" data-index="1"><span>Dr. Efua Darko</span></button>
+        <button class="thumb" data-index="2"><span>Samuel Adjei</span></button>
+        <button class="thumb" data-index="3"><span>Akosua Frimpong</span></button>
+        <button class="thumb" data-index="4"><span>Emmanuel Tetteh</span></button>
       </div>
     </div>
   </section>
@@ -442,9 +496,6 @@
       </div>
       <div class="team-grid">
         <div class="team-card">
-          <div class="team-img-wrap">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80" alt="Kwame Asante" />
-          </div>
           <div class="team-body">
             <h3>Kwame Asante</h3>
             <span class="team-role">CEO &amp; Co-Founder</span>
@@ -463,9 +514,6 @@
           </div>
         </div>
         <div class="team-card">
-          <div class="team-img-wrap">
-            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80" alt="Abena Mensah" />
-          </div>
           <div class="team-body">
             <h3>Abena Mensah</h3>
             <span class="team-role">CTO &amp; Co-Founder</span>
@@ -484,9 +532,6 @@
           </div>
         </div>
         <div class="team-card">
-          <div class="team-img-wrap">
-            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80" alt="Kofi Boateng" />
-          </div>
           <div class="team-body">
             <h3>Kofi Boateng</h3>
             <span class="team-role">Head of Cybersecurity</span>
@@ -505,9 +550,6 @@
           </div>
         </div>
         <div class="team-card">
-          <div class="team-img-wrap">
-            <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80" alt="Ama Owusu" />
-          </div>
           <div class="team-body">
             <h3>Ama Owusu</h3>
             <span class="team-role">Head of Product Design</span>
@@ -791,17 +833,9 @@
     <div class="container footer-grid">
       <div class="footer-brand">
         <a href="#" class="nav-logo footer-logo">
-          <div class="logo-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
-              <rect x="2" y="2" width="9" height="9" rx="1"/>
-              <rect x="13" y="2" width="9" height="9" rx="1"/>
-              <rect x="2" y="13" width="9" height="9" rx="1"/>
-              <rect x="13" y="13" width="9" height="9" rx="1"/>
-            </svg>
-          </div>
-          <span>Tri<strong>Axis</strong></span>
+          <img src="assets/triaxis-logo-transparent.png" alt="TriAxis Technologies" class="brand-logo" />
         </a>
-        <p>Your trusted IT partner since 2012. We build technology that empowers businesses to grow, innovate, and thrive in the digital age.</p>
+        <p>Your trusted IT partner since 2020. We build technology that empowers businesses to grow, innovate, and thrive in the digital age.</p>
         <div class="footer-socials">
           <a href="#" aria-label="LinkedIn" class="footer-social-btn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
@@ -865,6 +899,42 @@
       </div>
     </div>
   </footer>
+
+  <!-- CHATBOT WIDGET -->
+  <div id="cb-widget" aria-label="TriAxis chat assistant">
+    <div id="cb-window" role="dialog" aria-label="Chat with TriAxis" aria-modal="true">
+      <div id="cb-header">
+        <div class="cb-header-info">
+          <div class="cb-avatar">TX</div>
+          <div>
+            <p class="cb-header-name">TriAxis Assistant</p>
+            <p class="cb-header-status">Online</p>
+          </div>
+        </div>
+        <button id="cb-close" aria-label="Close chat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="cb-log" role="log" aria-live="polite">
+        <div class="cb-msg cb-msg--assistant">
+          <div class="cb-bubble">Hi! I'm the TriAxis assistant. Ask me anything about our services, pricing, or how to get started.</div>
+        </div>
+      </div>
+      <form id="cb-form" autocomplete="off">
+        <input id="cb-input" type="text" placeholder="Ask about our services…" aria-label="Type your message" maxlength="300" />
+        <button id="cb-send" type="submit" aria-label="Send message">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </form>
+    </div>
+    <div id="cb-launcher">
+      <span id="cb-label">Chat with us</span>
+      <button id="cb-toggle" aria-label="Open chat" aria-expanded="false" aria-controls="cb-window">
+        <svg id="cb-icon-open" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <svg id="cb-icon-close" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
 
   <script type="module" src="main.js"></script>
 </body>

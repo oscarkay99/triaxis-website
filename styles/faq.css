@@ -3,7 +3,7 @@
 .faq-container { max-width: 780px; }
 .faq-list { display: flex; flex-direction: column; gap: 12px; }
 .faq-item {
-  background: #fff; border-radius: var(--radius-sm);
+  background: var(--surface); border-radius: var(--radius-sm);
   border: 1px solid var(--border); overflow: hidden;
 }
 .faq-question {
