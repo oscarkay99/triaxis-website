@@ -1,0 +1,45 @@
+/* ===== TESTIMONIALS ===== */
+.testimonials { background: var(--dark-2); }
+.testimonial-slider { max-width: 700px; margin: 0 auto; text-align: center; }
+.testimonial-slide { display: none; animation: fadeIn 0.4s; }
+.testimonial-slide.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.stars { font-size: 1.4rem; color: var(--brown-light); margin-bottom: 24px; }
+blockquote {
+  font-size: clamp(1rem, 2vw, 1.2rem); font-style: italic; line-height: 1.7;
+  color: rgba(255,255,255,0.9); margin-bottom: 32px;
+}
+.testimonial-author {
+  display: flex; align-items: center; gap: 14px;
+  justify-content: center;
+}
+.testimonial-author img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid var(--brown); }
+.testimonial-author strong { display: block; color: #fff; font-size: 0.95rem; }
+.testimonial-author span { color: var(--brown-light); font-size: 0.83rem; }
+.slider-controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 40px; }
+.slider-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  color: #fff; background: rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.slider-btn:hover { background: var(--brown); border-color: var(--brown); }
+.slider-dots { display: flex; gap: 8px; align-items: center; }
+.slider-dot {
+  width: 8px; height: 8px; border-radius: 4px;
+  background: rgba(255,255,255,0.3); transition: all 0.3s;
+  border: none; padding: 0; cursor: pointer;
+}
+.slider-dot.active { width: 28px; background: var(--brown-light); }
+.testimonial-thumbnails { display: flex; gap: 10px; justify-content: center; margin-top: 36px; flex-wrap: wrap; }
+.thumb {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 99px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.6); font-size: 0.82rem;
+  transition: all 0.2s; background: rgba(255,255,255,0.04);
+}
+.thumb img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+.thumb.active { border-color: var(--brown); color: #fff; background: rgba(155,107,47,0.15); }
+.thumb:hover { border-color: var(--brown-light); color: #fff; }

@@ -1,0 +1,56 @@
+/* ===== PRICING ===== */
+.pricing { background: var(--cream); }
+.pricing-toggle {
+  display: flex; align-items: center; gap: 4px;
+  background: var(--cream-2); padding: 4px; border-radius: 99px;
+  width: fit-content; margin: 0 auto 48px;
+  border: 1px solid var(--border);
+}
+.toggle-btn {
+  padding: 8px 22px; border-radius: 99px;
+  font-size: 0.88rem; font-weight: 500; color: var(--text-muted);
+  transition: all 0.2s;
+}
+.toggle-btn.active { background: #fff; color: var(--dark); box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+.save-badge {
+  background: var(--brown); color: #fff;
+  font-size: 0.7rem; padding: 2px 7px; border-radius: 99px; margin-left: 6px;
+}
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
+.pricing-card {
+  background: #fff; border-radius: var(--radius);
+  padding: 32px; border: 1px solid var(--border);
+  position: relative;
+}
+.pricing-card-featured {
+  background: var(--dark); border-color: var(--dark);
+  color: #fff; transform: translateY(-8px);
+}
+.popular-badge {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  background: var(--brown); color: #fff;
+  font-size: 0.78rem; font-weight: 600; padding: 5px 16px; border-radius: 99px;
+}
+.plan-name { font-size: 1rem; font-weight: 600; color: var(--brown); margin-bottom: 8px; }
+.pricing-card-featured .plan-name { color: var(--brown-light); }
+.plan-price { display: flex; align-items: baseline; gap: 2px; margin-bottom: 10px; }
+.price-amount { font-size: 3rem; font-weight: 800; color: var(--dark); }
+.pricing-card-featured .price-amount { color: #fff; }
+.price-custom { font-size: 2.5rem; }
+.price-period { font-size: 0.9rem; color: var(--text-muted); }
+.pricing-card-featured .price-period { color: rgba(255,255,255,0.5); }
+.plan-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; }
+.pricing-card-featured .plan-desc { color: rgba(255,255,255,0.6); }
+.plan-btn { width: 100%; margin-bottom: 24px; }
+.plan-features { display: flex; flex-direction: column; gap: 11px; }
+.plan-features li { display: flex; align-items: center; gap: 10px; font-size: 0.86rem; }
+.feature-yes { color: var(--dark); }
+.feature-yes svg { color: var(--brown); flex-shrink: 0; }
+.feature-no { color: var(--text-muted); }
+.feature-no svg { color: #ccc; flex-shrink: 0; }
+.pricing-card-featured .feature-yes { color: rgba(255,255,255,0.9); }
+.pricing-card-featured .feature-yes svg { color: var(--brown-light); }
+.pricing-card-featured .feature-no { color: rgba(255,255,255,0.35); }
+.pricing-card-featured .feature-no svg { color: rgba(255,255,255,0.25); }
+.pricing-note { text-align: center; margin-top: 32px; color: var(--text-muted); font-size: 0.88rem; }
+.pricing-note a { color: var(--brown); font-weight: 600; }

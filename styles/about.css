@@ -1,0 +1,30 @@
+/* ===== ABOUT ===== */
+.about { background: var(--cream); }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+.about-image-wrap { position: relative; }
+.about-img { border-radius: 20px; width: 100%; object-fit: cover; aspect-ratio: 4/3; }
+.about-badge {
+  position: absolute; bottom: -24px; right: -24px;
+  background: var(--brown); color: #fff;
+  padding: 20px 24px; border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  max-width: 200px;
+}
+.about-badge-num { display: block; font-size: 2.5rem; font-weight: 800; line-height: 1; }
+.about-badge-text { display: block; font-size: 0.8rem; opacity: 0.85; margin-top: 6px; line-height: 1.4; }
+.about-content .section-tag { display: block; text-align: left; }
+.about-content h2 { font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 800; color: var(--dark); margin-bottom: 20px; }
+.about-content p { color: var(--text-muted); margin-bottom: 16px; }
+.values-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
+.value-card {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: #fff; padding: 16px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+.value-icon {
+  width: 36px; height: 36px; background: var(--cream-2);
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: var(--brown);
+}
+.value-card strong { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+.value-card p { font-size: 0.8rem; color: var(--text-muted); margin: 0; }
