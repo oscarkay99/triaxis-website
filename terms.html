@@ -3,146 +3,238 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Terms & Conditions | TriAxis Technologies</title>
-  <meta name="description" content="Terms and Conditions for using the TriAxis Technologies website and requesting services." />
-  <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="https://oscarkay99.github.io/triaxis-website/terms.html" />
+  <title>Terms &amp; Conditions — TriAxis IT Solutions</title>
   <link rel="icon" type="image/svg+xml" href="assets/meta/favicon.svg" />
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/meta/apple-touch-icon.png" />
-  <script>
-    (() => {
-      const preferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day';
-      try {
-        document.documentElement.dataset.theme = localStorage.getItem('triaxis-theme') || preferredTheme;
-      } catch {
-        document.documentElement.dataset.theme = preferredTheme;
-      }
-    })();
-  </script>
-  <script type="module" src="legal.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f7fafc; color: #0a2948; line-height: 1.7; }
+    a { text-decoration: none; color: inherit; }
+
+    .top-bar {
+      position: sticky; top: 0; z-index: 100;
+      background: #fff; border-bottom: 1px solid #d7e2ec;
+      padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .top-bar img { height: 36px; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.875rem; font-weight: 600; color: #f47a20;
+      transition: gap 0.15s;
+    }
+    .back-link:hover { gap: 10px; }
+
+    .hero {
+      background: linear-gradient(135deg, #002d55 0%, #0a4a7c 100%);
+      color: #fff; padding: 64px 24px 56px; text-align: center;
+    }
+    .hero .label {
+      display: inline-block; background: rgba(244,122,32,0.2); color: #ffb06a;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 99px; margin-bottom: 16px;
+    }
+    .hero h1 { font-size: clamp(2rem, 5vw, 2.75rem); font-weight: 800; margin-bottom: 12px; }
+    .hero p { font-size: 1rem; opacity: 0.75; max-width: 480px; margin: 0 auto; }
+
+    .content { max-width: 780px; margin: 0 auto; padding: 64px 24px 96px; }
+
+    .meta-bar {
+      display: flex; gap: 24px; flex-wrap: wrap;
+      background: #fff; border: 1px solid #d7e2ec; border-radius: 12px;
+      padding: 16px 24px; margin-bottom: 48px;
+      font-size: 0.82rem; color: #5f7184;
+    }
+    .meta-bar strong { color: #0a2948; }
+
+    .section { margin-bottom: 48px; }
+    .section h2 {
+      font-size: 1.15rem; font-weight: 700; color: #002d55;
+      margin-bottom: 14px; padding-bottom: 10px;
+      border-bottom: 2px solid #edf4f9;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section h2 .num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #f47a20; color: #fff;
+      font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .section p { margin-bottom: 12px; color: #1a3a56; }
+    .section ul { padding-left: 20px; margin-bottom: 12px; }
+    .section ul li { margin-bottom: 7px; color: #1a3a56; list-style: disc; }
+
+    .highlight-box {
+      background: #edf4f9; border-left: 4px solid #f47a20;
+      border-radius: 0 10px 10px 0; padding: 16px 20px; margin: 20px 0;
+      font-size: 0.9rem; color: #0a2948;
+    }
+
+    .contact-box {
+      background: #002d55; color: #fff; border-radius: 14px;
+      padding: 32px; text-align: center; margin-top: 56px;
+    }
+    .contact-box h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .contact-box p { opacity: 0.8; margin-bottom: 20px; font-size: 0.9rem; }
+    .contact-box a {
+      display: inline-block; background: #f47a20; color: #fff;
+      font-weight: 600; font-size: 0.9rem; padding: 11px 24px;
+      border-radius: 8px; transition: background 0.2s;
+    }
+    .contact-box a:hover { background: #d95f0f; }
+
+    footer { text-align: center; padding: 24px; font-size: 0.8rem; color: #5f7184; border-top: 1px solid #d7e2ec; }
+    footer a { color: #f47a20; }
+  </style>
 </head>
 <body>
-  <nav class="navbar scrolled" id="navbar">
-    <div class="nav-container">
-      <a href="index.html" class="nav-logo"><img src="assets/triaxis-logo-transparent.png" alt="TriAxis Technologies" class="brand-logo" /></a>
-      <ul class="nav-links">
-        <li><a href="index.html#services">Services</a></li>
-        <li><a href="index.html#about">About</a></li>
-        <li><a href="index.html#portfolio">Portfolio</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
-      </ul>
-      <a href="index.html#contact" class="btn btn-primary nav-cta">Get a Free Quote</a>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to night mode" aria-pressed="false">
-        <span class="theme-toggle-track"><span class="theme-toggle-icon theme-toggle-sun" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span><span class="theme-toggle-icon theme-toggle-moon" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span><span class="theme-toggle-thumb"></span></span>
-      </button>
-    </div>
+
+  <nav class="top-bar">
+    <a href="index.html">
+      <img src="assets/triaxis-logo-transparent.png" alt="TriAxis Technologies" />
+    </a>
+    <a href="index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Home
+    </a>
   </nav>
 
-  <main class="legal-page">
-    <header class="legal-hero">
-      <div class="container">
-        <div class="section-tag">Legal</div>
-        <h1>Terms & Conditions</h1>
-        <p>The basic rules for using this website and requesting information from TriAxis Technologies.</p>
-        <p class="legal-updated">Last updated: April 19, 2026</p>
-      </div>
-    </header>
+  <div class="hero">
+    <div class="label">Legal</div>
+    <h1>Terms &amp; Conditions</h1>
+    <p>Please read these terms carefully before using our website or services.</p>
+  </div>
 
-    <div class="legal-content">
-      <div class="container">
-        <article class="legal-document">
-          <p class="legal-note">This starter document is not a substitute for legal advice. Have it reviewed before using it as a final business contract.</p>
+  <div class="content">
 
-          <section>
-            <h2>1. Acceptance of These Terms</h2>
-            <p>By accessing or using this website, you agree to these Terms & Conditions. If you do not agree, please do not use the website.</p>
-          </section>
+    <div class="meta-bar">
+      <span><strong>Effective Date:</strong> January 1, 2026</span>
+      <span><strong>Last Updated:</strong> April 1, 2026</span>
+      <span><strong>Governing Law:</strong> Republic of Ghana</span>
+    </div>
 
-          <section>
-            <h2>2. Website Use</h2>
-            <p>You may use this website to learn about TriAxis Technologies, review our services, and submit enquiries. You agree not to:</p>
-            <ul>
-              <li>Attempt unauthorized access to the website or its systems.</li>
-              <li>Interfere with website security, availability, or performance.</li>
-              <li>Submit unlawful, harmful, misleading, abusive, or infringing content.</li>
-              <li>Use the website to send spam, malware, scraping bots, or automated abuse.</li>
-            </ul>
-          </section>
+    <div class="section">
+      <h2><span class="num">1</span> Acceptance of Terms</h2>
+      <p>By accessing or using the website at triaxis.tech or engaging any services provided by TriAxis IT Solutions ("TriAxis", "we", "our", or "us"), you agree to be bound by these Terms and Conditions. If you do not agree to these terms, please do not use our website or services.</p>
+      <p>These terms apply to all visitors, clients, and others who access or use our website and services.</p>
+    </div>
 
-          <section>
-            <h2>3. Website Information</h2>
-            <p>Website content is provided for general information only. It may describe services, pricing examples, team capabilities, and case studies, but it does not create a binding agreement, professional advice engagement, or guarantee of results.</p>
-          </section>
+    <div class="section">
+      <h2><span class="num">2</span> Services</h2>
+      <p>TriAxis IT Solutions provides technology services including, but not limited to:</p>
+      <ul>
+        <li>Custom software development (web, mobile, enterprise)</li>
+        <li>Cloud infrastructure setup, migration, and management</li>
+        <li>Cybersecurity audits, compliance consulting, and threat monitoring</li>
+        <li>Data engineering, analytics, and business intelligence</li>
+        <li>IT consulting and digital transformation strategy</li>
+        <li>Managed IT support and helpdesk services</li>
+      </ul>
+      <p>The specific scope, deliverables, timeline, and pricing for any engagement will be defined in a separate Statement of Work (SOW) or Service Agreement executed between TriAxis and the client.</p>
+    </div>
 
-          <section>
-            <h2>4. Services, Proposals, and Pricing</h2>
-            <p>Any project scope, pricing, timeline, service level, or deliverable becomes binding only when confirmed in a separate written proposal, statement of work, invoice, or signed agreement. Website pricing or package descriptions may change and may not reflect a final quote for your specific needs.</p>
-          </section>
+    <div class="section">
+      <h2><span class="num">3</span> Use of the Website</h2>
+      <p>You agree to use this website only for lawful purposes and in a manner that does not infringe the rights of others. You must not:</p>
+      <ul>
+        <li>Use the website in any way that violates applicable local, national, or international laws or regulations</li>
+        <li>Transmit unsolicited or unauthorised advertising or promotional material</li>
+        <li>Attempt to gain unauthorised access to any part of the website or its related systems</li>
+        <li>Introduce viruses, trojans, worms, or other malicious or harmful code</li>
+        <li>Reproduce, duplicate, or resell any part of our website without written permission</li>
+      </ul>
+    </div>
 
-          <section>
-            <h2>5. Chatbot and Automated Responses</h2>
-            <p>The chatbot is provided for convenience and general guidance. It may provide incomplete or outdated information. You should contact TriAxis Technologies directly before relying on chatbot responses for business decisions, service commitments, legal matters, security decisions, or project budgets.</p>
-          </section>
+    <div class="section">
+      <h2><span class="num">4</span> Intellectual Property</h2>
+      <p>All content on this website — including text, graphics, logos, icons, images, and software — is the property of TriAxis IT Solutions or its content suppliers and is protected by applicable intellectual property laws.</p>
+      <p>You may not reproduce, distribute, modify, or create derivative works from any content on this website without our express written permission. For client projects, intellectual property rights will be governed by the applicable client agreement.</p>
+    </div>
 
-          <section>
-            <h2>6. Intellectual Property</h2>
-            <p>The website design, copy, layout, graphics, logo, icons, and other materials belong to TriAxis Technologies or their respective owners. You may not copy, reproduce, modify, distribute, or reuse website materials for commercial purposes without written permission.</p>
-          </section>
+    <div class="section">
+      <h2><span class="num">5</span> Client Responsibilities</h2>
+      <p>When engaging TriAxis for services, you agree to:</p>
+      <ul>
+        <li>Provide accurate and complete information necessary for project delivery</li>
+        <li>Designate a primary point of contact and respond to communications in a timely manner</li>
+        <li>Fulfil payment obligations as outlined in the agreed service contract</li>
+        <li>Ensure that any materials, content, or data you provide to us do not infringe third-party rights</li>
+        <li>Obtain any necessary licences or permissions for third-party software or assets included in project scope</li>
+      </ul>
+    </div>
 
-          <section>
-            <h2>7. User Submissions</h2>
-            <p>If you submit information through the contact form, chatbot, or email, you confirm that you have the right to share it and that it is accurate to the best of your knowledge. You should not submit confidential, sensitive, or regulated data unless we have agreed on an appropriate secure channel.</p>
-          </section>
-
-          <section>
-            <h2>8. Third-Party Links and Tools</h2>
-            <p>The website may link to third-party websites, tools, platforms, or services. TriAxis Technologies is not responsible for third-party content, availability, privacy practices, or security.</p>
-          </section>
-
-          <section>
-            <h2>9. Website Availability</h2>
-            <p>We try to keep the website available and accurate, but we do not guarantee uninterrupted access, error-free operation, or that all content will always be current.</p>
-          </section>
-
-          <section>
-            <h2>10. Limitation of Liability</h2>
-            <p>To the extent permitted by law, TriAxis Technologies is not liable for indirect, incidental, consequential, special, or punitive damages arising from use of the website or reliance on website content.</p>
-          </section>
-
-          <section>
-            <h2>11. Indemnity</h2>
-            <p>You agree to be responsible for losses, claims, or expenses that arise from your misuse of the website, violation of these terms, or unlawful submissions.</p>
-          </section>
-
-          <section>
-            <h2>12. Governing Law</h2>
-            <p>Unless otherwise agreed in a separate contract, these terms are intended to be interpreted under the laws applicable to TriAxis Technologies' business operations.</p>
-          </section>
-
-          <section>
-            <h2>13. Changes</h2>
-            <p>We may update these terms from time to time. Continued use of the website after updates means you accept the updated terms.</p>
-          </section>
-
-          <section>
-            <h2>14. Contact</h2>
-            <p>Questions about these terms can be sent to <a href="mailto:hello@triaxis.tech">hello@triaxis.tech</a>.</p>
-          </section>
-
-          <div class="legal-actions">
-            <a href="privacy.html" class="btn btn-outline-dark">Privacy Policy</a>
-            <a href="cookies.html" class="btn btn-outline-dark">Cookie Policy</a>
-          </div>
-        </article>
+    <div class="section">
+      <h2><span class="num">6</span> Payment Terms</h2>
+      <p>Payment terms for all services will be specified in the individual service agreement or proposal. General terms include:</p>
+      <ul>
+        <li>Invoices are due within the period specified in the service agreement (typically 14–30 days)</li>
+        <li>Late payments may incur interest charges as outlined in the applicable agreement</li>
+        <li>TriAxis reserves the right to suspend services for accounts with outstanding overdue balances</li>
+        <li>All fees are exclusive of applicable taxes unless otherwise stated</li>
+      </ul>
+      <div class="highlight-box">
+        Managed IT support plans (Starter, Growth, Enterprise) are billed monthly or annually as selected at the time of subscription. Annual plans are non-refundable after the 14-day grace period.
       </div>
     </div>
-  </main>
 
-  <footer class="footer">
-    <div class="container footer-bottom-inner">
-      <p>© 2026 TriAxis Technologies. All rights reserved.</p>
-      <p class="footer-contact-info"><a href="index.html">Back to website</a></p>
+    <div class="section">
+      <h2><span class="num">7</span> Confidentiality</h2>
+      <p>Both parties agree to maintain the confidentiality of any proprietary or sensitive information shared during the course of an engagement. TriAxis will not disclose client information to third parties except as required to deliver the agreed services or as required by law.</p>
+      <p>Specific confidentiality obligations for client engagements will be governed by a Non-Disclosure Agreement (NDA) where applicable.</p>
     </div>
+
+    <div class="section">
+      <h2><span class="num">8</span> Limitation of Liability</h2>
+      <p>To the fullest extent permitted by law, TriAxis IT Solutions shall not be liable for:</p>
+      <ul>
+        <li>Any indirect, incidental, special, or consequential damages arising from your use of our website or services</li>
+        <li>Loss of data, revenue, profits, or business opportunities</li>
+        <li>Damages resulting from third-party actions, cyber attacks, or events beyond our reasonable control</li>
+      </ul>
+      <p>Our total liability in connection with any service engagement shall not exceed the total fees paid by the client for that specific engagement in the three months preceding the claim.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="num">9</span> Warranty Disclaimer</h2>
+      <p>Our website is provided on an "as is" and "as available" basis without warranties of any kind, either express or implied. We do not warrant that the website will be uninterrupted, error-free, or free of viruses or other harmful components.</p>
+      <p>Service-level warranties for client engagements will be defined in the applicable service agreement.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="num">10</span> Termination</h2>
+      <p>Either party may terminate a service engagement in accordance with the terms of the applicable service agreement. TriAxis reserves the right to immediately suspend or terminate access to its services in cases of:</p>
+      <ul>
+        <li>Material breach of these terms or the service agreement</li>
+        <li>Non-payment after reasonable notice</li>
+        <li>Conduct that is unlawful, harmful, or abusive</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2><span class="num">11</span> Governing Law &amp; Disputes</h2>
+      <p>These Terms and Conditions are governed by and construed in accordance with the laws of the Republic of Ghana. Any disputes arising from these terms or our services shall first be subject to good-faith negotiation between the parties.</p>
+      <p>If a dispute cannot be resolved through negotiation within 30 days, it shall be submitted to mediation or arbitration in Accra, Ghana, in accordance with applicable Ghanaian law.</p>
+    </div>
+
+    <div class="section">
+      <h2><span class="num">12</span> Changes to These Terms</h2>
+      <p>We reserve the right to modify these Terms and Conditions at any time. Changes will be effective immediately upon posting to this page with an updated "Last Updated" date. Your continued use of our website or services after any changes constitutes acceptance of the revised terms.</p>
+      <p>For active service clients, material changes to contractual terms will be communicated directly with a minimum of 30 days' notice.</p>
+    </div>
+
+    <div class="contact-box">
+      <h3>Questions about these terms?</h3>
+      <p>Our team is happy to clarify any aspect of our Terms and Conditions.</p>
+      <a href="mailto:hello@triaxis.tech">Contact Us — hello@triaxis.tech</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>© 2026 TriAxis IT Solutions. All rights reserved. &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a> &nbsp;·&nbsp; <a href="index.html">Back to Home</a></p>
   </footer>
+
 </body>
 </html>

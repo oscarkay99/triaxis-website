@@ -41,13 +41,7 @@
   margin-top: 8px;
   text-transform: uppercase;
 }
-.footer-legal-link {
-  color: var(--text-muted);
-  font-weight: 500;
-}
-.footer-legal-link:hover {
-  color: var(--brown);
-}
+.footer-legal-link { font-weight: 400; transition: color 0.2s; }
 .footer-bottom { border-top: 1px solid var(--border); padding: 20px 0; }
 .footer-bottom-inner {
   display: flex; align-items: center; justify-content: space-between;
