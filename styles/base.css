@@ -3,8 +3,8 @@
 html { scroll-behavior: smooth; }
 body {
   font-family: 'Inter', sans-serif;
-  background: #faf6ef;
-  color: #2d2010;
+  background: #f6f9fc;
+  color: #0a2948;
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -15,20 +15,20 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
 
 /* ===== TOKENS ===== */
 :root {
-  --brown: #9b6b2f;
-  --brown-dark: #7a5220;
-  --brown-light: #c49a5a;
-  --cream: #faf6ef;
-  --cream-2: #f5ede0;
-  --dark: #1e1208;
-  --dark-2: #2d1e0e;
-  --text: #2d2010;
-  --text-muted: #8a7060;
-  --border: #e8ddd0;
+  --brown: #f47a20;
+  --brown-dark: #d95f0f;
+  --brown-light: #ff9a3d;
+  --cream: #f6f9fc;
+  --cream-2: #eaf1f7;
+  --dark: #002d55;
+  --dark-2: #061c33;
+  --text: #0a2948;
+  --text-muted: #5f7184;
+  --border: #d7e2ec;
   --radius: 14px;
   --radius-sm: 8px;
-  --shadow: 0 2px 16px rgba(100,60,10,0.08);
-  --shadow-lg: 0 8px 40px rgba(100,60,10,0.14);
+  --shadow: 0 2px 16px rgba(0,45,85,0.08);
+  --shadow-lg: 0 8px 40px rgba(0,45,85,0.14);
 }
 
 /* ===== UTILITIES ===== */
@@ -74,7 +74,7 @@ button { cursor: pointer; font-family: inherit; border: none; background: none; 
   cursor: pointer;
 }
 .btn-primary { background: var(--brown); color: #fff; }
-.btn-primary:hover { background: var(--brown-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(155,107,47,0.3); }
+.btn-primary:hover { background: var(--brown-dark); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(244,122,32,0.32); }
 .btn-outline-light { background: rgba(255,255,255,0.12); color: #fff; border: 1.5px solid rgba(255,255,255,0.4); }
 .btn-outline-light:hover { background: rgba(255,255,255,0.2); }
 .btn-outline-dark { background: transparent; color: var(--dark); border: 1.5px solid var(--border); }

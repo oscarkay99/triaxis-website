@@ -5,9 +5,9 @@
   transition: background 0.3s, box-shadow 0.3s, padding 0.3s;
 }
 .navbar.scrolled {
-  background: rgba(250,246,239,0.95);
+  background: rgba(246,249,252,0.95);
   backdrop-filter: blur(12px);
-  box-shadow: 0 1px 20px rgba(100,60,10,0.1);
+  box-shadow: 0 1px 20px rgba(0,45,85,0.1);
   padding: 10px 0;
 }
 .nav-container {
@@ -16,15 +16,21 @@
 }
 .nav-logo {
   display: flex; align-items: center; gap: 10px;
-  font-size: 1.2rem; font-weight: 600; color: #fff;
   flex-shrink: 0; transition: color 0.3s;
 }
-.nav-logo strong { font-weight: 800; }
-.navbar.scrolled .nav-logo { color: var(--dark); }
-.logo-icon {
-  width: 36px; height: 36px; background: var(--brown);
-  border-radius: 8px; display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+.brand-logo {
+  width: 178px; height: 58px;
+  object-fit: contain;
+  background: rgba(255,255,255,0.95);
+  border-radius: 8px;
+  padding: 6px 8px;
+  box-shadow: 0 8px 24px rgba(0,45,85,0.12);
+  transition: width 0.3s, height 0.3s, padding 0.3s, box-shadow 0.3s;
+}
+.navbar.scrolled .brand-logo {
+  width: 152px; height: 48px;
+  padding: 4px 6px;
+  box-shadow: none;
 }
 .nav-links {
   display: flex; align-items: center; gap: 4px; margin-left: auto;

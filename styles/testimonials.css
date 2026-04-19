@@ -41,5 +41,5 @@ blockquote {
   transition: all 0.2s; background: rgba(255,255,255,0.04);
 }
 .thumb img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
-.thumb.active { border-color: var(--brown); color: #fff; background: rgba(155,107,47,0.15); }
+.thumb.active { border-color: var(--brown); color: #fff; background: rgba(244,122,32,0.16); }
 .thumb:hover { border-color: var(--brown-light); color: #fff; }
