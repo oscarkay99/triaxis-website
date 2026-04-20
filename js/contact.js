@@ -38,7 +38,7 @@ if (form) {
     submitBtn.disabled = false;
 
     if (error) {
-      alert('Something went wrong. Please email us directly at hello@triaxis.tech');
+      alert('Something went wrong. Please email us directly at info@triaxistechnologies.com');
       return;
     }
 

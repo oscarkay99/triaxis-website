@@ -26,7 +26,7 @@ Pricing plans:
 - Enterprise: Custom pricing — unlimited users, 24/7 priority SLA, full SOC, unlimited custom development, dedicated engineering team, on-site support, executive IT consulting.
 
 Contact:
-- Email: hello@triaxis.tech
+- Email: info@triaxistechnologies.com
 - Phone: +233 30 123 4567
 - Location: Accra, Ghana
 - Website contact form: respond within 24 hours
@@ -190,7 +190,7 @@ async function handleSend() {
     }
   } catch {
     setTyping(false);
-    appendMessage('assistant', "Sorry, I'm having trouble connecting right now. Please reach us directly at hello@triaxis.tech or +233 30 123 4567.");
+    appendMessage('assistant', "Sorry, I'm having trouble connecting right now. Please reach us directly at info@triaxistechnologies.com or +233 30 123 4567.");
   } finally {
     setInputDisabled(false);
     document.getElementById('cb-input').focus();
