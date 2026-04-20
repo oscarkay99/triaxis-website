@@ -31,19 +31,71 @@ Contact:
 - Website contact form: respond within 24 hours
 - Free 30-minute discovery call available, proposal within 5 business days
 
-Scheduling a discovery call:
-When someone wants to schedule a call or meeting, collect the following one at a time:
-1. Their full name
-2. Their email address
-3. Their preferred date and time
-
-Once you have all three, tell them exactly this: "Thank you! I've sent your meeting request to the TriAxis team. You'll receive an email confirmation once they review and accept your request." Then stop — do not promise anything beyond that.
-
-Do not make up meeting links, calendar invites, or say an email has already been sent until you have collected all three pieces of information.
-
 Keep responses short and friendly. Use plain text — no markdown symbols like ** or ##. If someone asks for a calculation (e.g. annual savings, plan costs), compute it and give the exact answer.`;
 
 const conversationHistory = [];
+
+// Lead state machine — tracks structured collection step by step
+const lead = { name: null, email: null, preferred_time: null, saved: false };
+let collectingLead = false;
+let leadStep = null; // 'name' | 'email' | 'time'
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+async function saveLead() {
+  if (lead.saved) return;
+  lead.saved = true;
+  await supabase.from('chat_leads').insert({
+    name: lead.name,
+    email: lead.email,
+    preferred_time: lead.preferred_time,
+  });
+}
+
+function wantsToSchedule(text) {
+  return /\b(schedule|book|set up|arrange|call|meeting|discovery|appointment|talk|speak)\b/i.test(text);
+}
+
+// Returns a bot reply if we're mid-collection, null otherwise
+async function handleLeadCollection(userText) {
+  if (!collectingLead && !wantsToSchedule(userText)) return null;
+
+  if (!collectingLead) {
+    collectingLead = true;
+    leadStep = 'name';
+    return "I'd be happy to set that up! What's your full name?";
+  }
+
+  if (leadStep === 'name') {
+    const trimmed = userText.trim();
+    if (trimmed.split(' ').length < 2) {
+      return "Please provide your full name (first and last name).";
+    }
+    lead.name = trimmed;
+    leadStep = 'email';
+    return `Thanks, ${lead.name.split(' ')[0]}! What's your email address?`;
+  }
+
+  if (leadStep === 'email') {
+    const trimmed = userText.trim();
+    if (!EMAIL_RE.test(trimmed)) {
+      return "That doesn't look like a valid email. Please try again.";
+    }
+    lead.email = trimmed;
+    leadStep = 'time';
+    return "Got it! What date and time works best for you?";
+  }
+
+  if (leadStep === 'time') {
+    lead.preferred_time = userText.trim();
+    await saveLead();
+    collectingLead = false;
+    leadStep = null;
+    return `Perfect! Your request has been sent to the TriAxis team. They'll review it and send a confirmation to ${lead.email}. Is there anything else I can help you with?`;
+  }
+
+  return null;
+}
 
 async function getGroqResponse(userMessage) {
   conversationHistory.push({ role: 'user', content: userMessage });
@@ -70,22 +122,6 @@ async function getGroqResponse(userMessage) {
 
   conversationHistory.push({ role: 'assistant', content: reply });
   return reply;
-}
-
-async function saveLeadIfReady() {
-  const text = conversationHistory.map(m => m.content).join(' ');
-  const nameMatch = text.match(/(?:my name is|i(?:'?m| am)) ([A-Z][a-z]+(?: [A-Z][a-z]+)+)/i);
-  const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-  const timeMatch = text.match(/(?:prefer|available|schedule|time|date)[^.]*?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?[^.]*(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|\d{1,2}(?:st|nd|rd|th)?(?:\s+\w+)?)?)/i);
-
-  if (emailMatch && nameMatch && timeMatch && !window._leadSaved) {
-    window._leadSaved = true;
-    await supabase.from('chat_leads').insert({
-      name: nameMatch[1],
-      email: emailMatch[0],
-      preferred_time: timeMatch[0],
-    });
-  }
 }
 
 function appendMessage(role, text) {
@@ -133,10 +169,16 @@ async function handleSend() {
   setInputDisabled(true);
 
   try {
-    const reply = await getGroqResponse(text);
-    setTyping(false);
-    appendMessage('assistant', reply);
-    await saveLeadIfReady();
+    // Lead collection takes priority over AI
+    const leadReply = await handleLeadCollection(text);
+    if (leadReply) {
+      setTyping(false);
+      appendMessage('assistant', leadReply);
+    } else {
+      const reply = await getGroqResponse(text);
+      setTyping(false);
+      appendMessage('assistant', reply);
+    }
   } catch {
     setTyping(false);
     appendMessage('assistant', "Sorry, I'm having trouble connecting right now. Please reach us directly at hello@triaxis.tech or +233 30 123 4567.");
