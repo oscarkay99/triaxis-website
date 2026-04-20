@@ -53,10 +53,9 @@ async function saveLead() {
     .insert({ id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time });
 
   if (!error) {
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({ id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time }),
-    }).catch(() => {});
+    const formData = new FormData();
+    formData.append('data', JSON.stringify({ id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time }));
+    fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: formData }).catch(() => {});
   }
 }
 
