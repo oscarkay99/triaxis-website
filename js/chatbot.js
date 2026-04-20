@@ -2,6 +2,7 @@ import { supabase } from './supabase.js';
 
 const GROQ_KEY = import.meta.env.VITE_GROQ_KEY;
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+const APPS_SCRIPT_URL = import.meta.env.VITE_APPS_SCRIPT_URL;
 
 const SYSTEM_PROMPT = `You are the virtual assistant for TriAxis IT Solutions, a professional IT company based in Accra, Ghana. Be helpful, concise, and professional. Only answer questions related to TriAxis or general IT topics relevant to the business. Do not discuss unrelated topics.
 
@@ -45,11 +46,19 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 async function saveLead() {
   if (lead.saved) return;
   lead.saved = true;
-  await supabase.from('chat_leads').insert({
-    name: lead.name,
-    email: lead.email,
-    preferred_time: lead.preferred_time,
-  });
+
+  const { data, error } = await supabase
+    .from('chat_leads')
+    .insert({ name: lead.name, email: lead.email, preferred_time: lead.preferred_time })
+    .select('id')
+    .single();
+
+  if (!error && data?.id) {
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ id: data.id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time }),
+    }).catch(() => {});
+  }
 }
 
 function wantsToSchedule(text) {
