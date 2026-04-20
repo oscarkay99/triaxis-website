@@ -97,10 +97,13 @@ async function handleLeadCollection(userText) {
 
   if (leadStep === 'time') {
     lead.preferred_time = userText.trim();
+    const confirmedEmail = lead.email;
     await saveLead();
+    // Reset for next booking
+    lead.name = null; lead.email = null; lead.preferred_time = null; lead.saved = false;
     collectingLead = false;
     leadStep = null;
-    return `Perfect! Your request has been sent to the TriAxis team. They'll review it and send a confirmation to ${lead.email}. Is there anything else I can help you with?`;
+    return `Perfect! Your request has been sent to the TriAxis team. They'll review it and send a confirmation to ${confirmedEmail}. Is there anything else I can help you with?`;
   }
 
   return null;
