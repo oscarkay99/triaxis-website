@@ -1,4 +1,4 @@
-const GEMINI_KEY = 'AIzaSyDPsqgMm6MIXNWdFJjUcb7PeWaODUzLg8c';
+const GEMINI_KEY = import.meta.env.VITE_GEMINI_KEY;
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_KEY}`;
 
 const SYSTEM_PROMPT = `You are the virtual assistant for TriAxis IT Solutions, a professional IT company based in Accra, Ghana. Be helpful, concise, and professional. Only answer questions related to TriAxis or general IT topics relevant to the business. Do not discuss unrelated topics.
