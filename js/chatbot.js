@@ -47,16 +47,15 @@ async function saveLead() {
   if (lead.saved) return;
   lead.saved = true;
 
-  const { data, error } = await supabase
+  const id = crypto.randomUUID();
+  const { error } = await supabase
     .from('chat_leads')
-    .insert({ name: lead.name, email: lead.email, preferred_time: lead.preferred_time })
-    .select('id')
-    .single();
+    .insert({ id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time });
 
-  if (!error && data?.id) {
+  if (!error) {
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
-      body: JSON.stringify({ id: data.id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time }),
+      body: JSON.stringify({ id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time }),
     }).catch(() => {});
   }
 }
