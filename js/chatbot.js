@@ -1,5 +1,5 @@
-const GEMINI_KEY = import.meta.env.VITE_GEMINI_KEY;
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_KEY}`;
+const GROQ_KEY = import.meta.env.VITE_GROQ_KEY;
+const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 const SYSTEM_PROMPT = `You are the virtual assistant for TriAxis IT Solutions, a professional IT company based in Accra, Ghana. Be helpful, concise, and professional. Only answer questions related to TriAxis or general IT topics relevant to the business. Do not discuss unrelated topics.
 
@@ -33,28 +33,30 @@ Keep responses short and friendly. Use plain text — no markdown symbols like *
 
 const conversationHistory = [];
 
-async function getGeminiResponse(userMessage) {
-  conversationHistory.push({ role: 'user', parts: [{ text: userMessage }] });
+async function getGroqResponse(userMessage) {
+  conversationHistory.push({ role: 'user', content: userMessage });
 
-  const body = {
-    system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-    contents: conversationHistory,
-    generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
-  };
-
-  const res = await fetch(GEMINI_URL, {
+  const res = await fetch(GROQ_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${GROQ_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...conversationHistory],
+      max_tokens: 300,
+      temperature: 0.7,
+    }),
   });
 
   if (!res.ok) throw new Error(`API error ${res.status}`);
 
   const data = await res.json();
-  const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  const reply = data.choices?.[0]?.message?.content;
   if (!reply) throw new Error('Empty response');
 
-  conversationHistory.push({ role: 'model', parts: [{ text: reply }] });
+  conversationHistory.push({ role: 'assistant', content: reply });
   return reply;
 }
 
@@ -103,7 +105,7 @@ async function handleSend() {
   setInputDisabled(true);
 
   try {
-    const reply = await getGeminiResponse(text);
+    const reply = await getGroqResponse(text);
     setTyping(false);
     appendMessage('assistant', reply);
   } catch {
