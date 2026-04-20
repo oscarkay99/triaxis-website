@@ -213,13 +213,6 @@ function initChatbot() {
     e.preventDefault();
     handleSend();
   });
-
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  });
 }
 
 initChatbot();
