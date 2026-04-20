@@ -1,3 +1,5 @@
+import { supabase } from './supabase.js';
+
 const GROQ_KEY = import.meta.env.VITE_GROQ_KEY;
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
@@ -29,6 +31,16 @@ Contact:
 - Website contact form: respond within 24 hours
 - Free 30-minute discovery call available, proposal within 5 business days
 
+Scheduling a discovery call:
+When someone wants to schedule a call or meeting, collect the following one at a time:
+1. Their full name
+2. Their email address
+3. Their preferred date and time
+
+Once you have all three, tell them exactly this: "Thank you! I've sent your meeting request to the TriAxis team. You'll receive an email confirmation once they review and accept your request." Then stop — do not promise anything beyond that.
+
+Do not make up meeting links, calendar invites, or say an email has already been sent until you have collected all three pieces of information.
+
 Keep responses short and friendly. Use plain text — no markdown symbols like ** or ##. If someone asks for a calculation (e.g. annual savings, plan costs), compute it and give the exact answer.`;
 
 const conversationHistory = [];
@@ -58,6 +70,22 @@ async function getGroqResponse(userMessage) {
 
   conversationHistory.push({ role: 'assistant', content: reply });
   return reply;
+}
+
+async function saveLeadIfReady() {
+  const text = conversationHistory.map(m => m.content).join(' ');
+  const nameMatch = text.match(/(?:my name is|i(?:'?m| am)) ([A-Z][a-z]+(?: [A-Z][a-z]+)+)/i);
+  const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+  const timeMatch = text.match(/(?:prefer|available|schedule|time|date)[^.]*?(\d{1,2}(?::\d{2})?\s*(?:am|pm)?[^.]*(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|\d{1,2}(?:st|nd|rd|th)?(?:\s+\w+)?)?)/i);
+
+  if (emailMatch && nameMatch && timeMatch && !window._leadSaved) {
+    window._leadSaved = true;
+    await supabase.from('chat_leads').insert({
+      name: nameMatch[1],
+      email: emailMatch[0],
+      preferred_time: timeMatch[0],
+    });
+  }
 }
 
 function appendMessage(role, text) {
@@ -108,6 +136,7 @@ async function handleSend() {
     const reply = await getGroqResponse(text);
     setTyping(false);
     appendMessage('assistant', reply);
+    await saveLeadIfReady();
   } catch {
     setTyping(false);
     appendMessage('assistant', "Sorry, I'm having trouble connecting right now. Please reach us directly at hello@triaxis.tech or +233 30 123 4567.");

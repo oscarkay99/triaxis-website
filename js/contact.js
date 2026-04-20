@@ -1,5 +1,4 @@
-// ===== CONTACT SECTION =====
-// Owner: contact section collaborator
+import { supabase } from './supabase.js';
 
 // Character counter
 const messageEl = document.getElementById('message');
@@ -16,24 +15,36 @@ const successEl = document.getElementById('formSuccess');
 const submitBtn = document.getElementById('submitBtn');
 
 if (form) {
-  form.addEventListener('submit', e => {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     const name = form.fullName.value.trim();
     const email = form.email.value.trim();
+    const service = form.service?.value || null;
     const message = form.message.value.trim();
+
     if (!name || !email || !message) {
       alert('Please fill in all required fields.');
       return;
     }
+
     submitBtn.textContent = 'Sending...';
     submitBtn.disabled = true;
-    setTimeout(() => {
-      submitBtn.textContent = 'Send Message';
-      submitBtn.disabled = false;
-      form.reset();
-      charCountEl.textContent = '(0/500)';
-      successEl.classList.add('show');
-      setTimeout(() => successEl.classList.remove('show'), 5000);
-    }, 1200);
+
+    const { error } = await supabase
+      .from('contact_submissions')
+      .insert({ name, email, service, message });
+
+    submitBtn.textContent = 'Send Message';
+    submitBtn.disabled = false;
+
+    if (error) {
+      alert('Something went wrong. Please email us directly at hello@triaxis.tech');
+      return;
+    }
+
+    form.reset();
+    charCountEl.textContent = '(0/500)';
+    successEl.classList.add('show');
+    setTimeout(() => successEl.classList.remove('show'), 5000);
   });
 }
