@@ -195,6 +195,23 @@
 #cb-send:hover:not(:disabled) { background: var(--brown-dark); }
 #cb-send:disabled { opacity: 0.5; }
 
+:root[data-theme="night"] #cb-window {
+  background: var(--cream);
+  border-color: var(--border);
+}
+:root[data-theme="night"] #cb-form { background: var(--cream); }
+:root[data-theme="night"] #cb-input {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+:root[data-theme="night"] #cb-input::placeholder { color: var(--text-muted); }
+:root[data-theme="night"] .cb-msg--assistant .cb-bubble {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+
 :root[data-theme="night"] #cb-label {
   background: var(--surface);
   color: var(--text);
