@@ -1,7 +1,7 @@
 /* ===== CHATBOT ===== */
 #cb-widget {
   position: fixed;
-  bottom: 28px;
+  bottom: 68px;
   right: 28px;
   z-index: 1000;
   display: flex;

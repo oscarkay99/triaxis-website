@@ -1,5 +1,8 @@
-const GROQ_KEY = import.meta.env.VITE_GROQ_KEY;
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
+import { supabase } from './supabase.js';
+
+const GROQ_KEY = import.meta.env.VITE_GROQ_KEY; // only set in local dev
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 const SYSTEM_PROMPT = `You are the virtual assistant for TriAxis IT Solutions, a professional IT company based in Accra, Ghana. Be helpful, concise, and professional. Only answer questions related to TriAxis or general IT topics relevant to the business. Do not discuss unrelated topics.
 
@@ -23,7 +26,7 @@ Pricing plans:
 - Enterprise: Custom pricing — unlimited users, 24/7 priority SLA, full SOC, unlimited custom development, dedicated engineering team, on-site support, executive IT consulting.
 
 Contact:
-- Email: hello@triaxis.tech
+- Email: info@triaxistechnologies.com
 - Phone: +233 30 123 4567
 - Location: Accra, Ghana
 - Website contact form: respond within 24 hours
@@ -33,29 +36,115 @@ Keep responses short and friendly. Use plain text — no markdown symbols like *
 
 const conversationHistory = [];
 
+const lead = { name: null, email: null, preferred_time: null, saved: false };
+let collectingLead = false;
+let leadStep = null; // 'name' | 'email' | 'time'
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Rate limiting
+let lastSendTime = 0;
+let sessionMessageCount = 0;
+const SEND_COOLDOWN_MS = 3000;
+const MAX_SESSION_MESSAGES = 50;
+
+async function saveLead() {
+  if (lead.saved) return;
+  lead.saved = true;
+
+  const id = crypto.randomUUID();
+  await supabase
+    .from('chat_leads')
+    .insert({ id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time });
+}
+
+function wantsToSchedule(text) {
+  return /\b(schedule|book|set up|arrange|call|meeting|discovery|appointment|talk|speak)\b/i.test(text);
+}
+
+async function handleLeadCollection(userText) {
+  if (!collectingLead && !wantsToSchedule(userText)) return null;
+
+  if (!collectingLead) {
+    collectingLead = true;
+    leadStep = 'name';
+    return "I'd be happy to set that up! What's your full name?";
+  }
+
+  if (leadStep === 'name') {
+    const trimmed = userText.trim();
+    if (trimmed.split(' ').length < 2) {
+      return "Please provide your full name (first and last name).";
+    }
+    lead.name = trimmed;
+    leadStep = 'email';
+    return `Thanks, ${lead.name.split(' ')[0]}! What's your email address?`;
+  }
+
+  if (leadStep === 'email') {
+    const trimmed = userText.trim();
+    if (!EMAIL_RE.test(trimmed)) {
+      return "That doesn't look like a valid email. Please try again.";
+    }
+    lead.email = trimmed;
+    leadStep = 'time';
+    return "Got it! What date and time works best for you?";
+  }
+
+  if (leadStep === 'time') {
+    lead.preferred_time = userText.trim();
+    const confirmedEmail = lead.email;
+    await saveLead();
+    lead.name = null; lead.email = null; lead.preferred_time = null; lead.saved = false;
+    collectingLead = false;
+    leadStep = null;
+    return `Perfect! Your request has been sent to the TriAxis team. They'll review it and send a confirmation to ${confirmedEmail}. Is there anything else I can help you with?`;
+  }
+
+  return null;
+}
+
 async function getGroqResponse(userMessage) {
   conversationHistory.push({ role: 'user', content: userMessage });
 
-  const res = await fetch(GROQ_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${GROQ_KEY}`,
-    },
-    body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
-      messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...conversationHistory],
-      max_tokens: 300,
-      temperature: 0.7,
-    }),
-  });
+  const fullMessages = [{ role: 'system', content: SYSTEM_PROMPT }, ...conversationHistory];
+  let reply;
 
-  if (!res.ok) throw new Error(`API error ${res.status}`);
+  if (GROQ_KEY) {
+    // Local dev: call Groq directly (key only exists in .env, never in production build)
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${GROQ_KEY}`,
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: fullMessages,
+        max_tokens: 300,
+        temperature: 0.7,
+      }),
+    });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const data = await res.json();
+    reply = data.choices?.[0]?.message?.content;
+  } else {
+    // Production: Groq key lives server-side in the edge function
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        apikey: SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ messages: fullMessages }),
+    });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const data = await res.json();
+    reply = data.reply;
+  }
 
-  const data = await res.json();
-  const reply = data.choices?.[0]?.message?.content;
   if (!reply) throw new Error('Empty response');
-
   conversationHistory.push({ role: 'assistant', content: reply });
   return reply;
 }
@@ -95,22 +184,38 @@ function setInputDisabled(disabled) {
 }
 
 async function handleSend() {
+  const now = Date.now();
+  if (now - lastSendTime < SEND_COOLDOWN_MS) return;
+
+  if (sessionMessageCount >= MAX_SESSION_MESSAGES) {
+    appendMessage('assistant', "You've reached the session limit. Please contact us directly at info@triaxistechnologies.com or +233 30 123 4567.");
+    return;
+  }
+
   const input = document.getElementById('cb-input');
   const text = input.value.trim();
-  if (!text) return;
+  if (!text || text.length > 300) return;
 
+  lastSendTime = now;
+  sessionMessageCount++;
   input.value = '';
   appendMessage('user', text);
   setTyping(true);
   setInputDisabled(true);
 
   try {
-    const reply = await getGroqResponse(text);
-    setTyping(false);
-    appendMessage('assistant', reply);
+    const leadReply = await handleLeadCollection(text);
+    if (leadReply) {
+      setTyping(false);
+      appendMessage('assistant', leadReply);
+    } else {
+      const reply = await getGroqResponse(text);
+      setTyping(false);
+      appendMessage('assistant', reply);
+    }
   } catch {
     setTyping(false);
-    appendMessage('assistant', "Sorry, I'm having trouble connecting right now. Please reach us directly at hello@triaxis.tech or +233 30 123 4567.");
+    appendMessage('assistant', "Sorry, I'm having trouble connecting right now. Please reach us directly at info@triaxistechnologies.com or +233 30 123 4567.");
   } finally {
     setInputDisabled(false);
     document.getElementById('cb-input').focus();
@@ -141,13 +246,6 @@ function initChatbot() {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     handleSend();
-  });
-
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
   });
 }
 
