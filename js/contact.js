@@ -14,9 +14,23 @@ const form = document.getElementById('contactForm');
 const successEl = document.getElementById('formSuccess');
 const submitBtn = document.getElementById('submitBtn');
 
+const CONTACT_COOLDOWN_KEY = 'triaxis-last-contact';
+const CONTACT_COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes
+
 if (form) {
   form.addEventListener('submit', async e => {
     e.preventDefault();
+
+    try {
+      const lastContact = parseInt(localStorage.getItem(CONTACT_COOLDOWN_KEY) || '0', 10);
+      const waitMs = CONTACT_COOLDOWN_MS - (Date.now() - lastContact);
+      if (waitMs > 0) {
+        const waitMin = Math.ceil(waitMs / 60000);
+        alert(`Please wait ${waitMin} minute${waitMin !== 1 ? 's' : ''} before sending another message.`);
+        return;
+      }
+    } catch { /* storage unavailable, allow submit */ }
+
     const name = form.fullName.value.trim();
     const email = form.email.value.trim();
     const service = form.service?.value || null;
@@ -41,6 +55,8 @@ if (form) {
       alert('Something went wrong. Please email us directly at info@triaxistechnologies.com');
       return;
     }
+
+    try { localStorage.setItem(CONTACT_COOLDOWN_KEY, Date.now().toString()); } catch { /* ignore */ }
 
     form.reset();
     charCountEl.textContent = '(0/500)';

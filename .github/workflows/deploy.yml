@@ -35,10 +35,8 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_GROQ_KEY: ${{ secrets.VITE_GROQ_KEY }}
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_APPS_SCRIPT_URL: ${{ secrets.VITE_APPS_SCRIPT_URL }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
