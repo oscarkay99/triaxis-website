@@ -27,7 +27,7 @@ Pricing plans:
 
 Contact:
 - Email: info@triaxistechnologies.com
-- Phone: +233 30 123 4567
+- Phone: 0530848374 / 0593998578
 - Location: Accra, Ghana
 - Website contact form: respond within 24 hours
 - Free 30-minute discovery call available, proposal within 5 business days
@@ -188,7 +188,7 @@ async function handleSend() {
   if (now - lastSendTime < SEND_COOLDOWN_MS) return;
 
   if (sessionMessageCount >= MAX_SESSION_MESSAGES) {
-    appendMessage('assistant', "You've reached the session limit. Please contact us directly at info@triaxistechnologies.com or +233 30 123 4567.");
+    appendMessage('assistant', "You've reached the session limit. Please contact us directly at info@triaxistechnologies.com or 0530848374 / 0593998578.");
     return;
   }
 
@@ -215,7 +215,7 @@ async function handleSend() {
     }
   } catch {
     setTyping(false);
-    appendMessage('assistant', "Sorry, I'm having trouble connecting right now. Please reach us directly at info@triaxistechnologies.com or +233 30 123 4567.");
+    appendMessage('assistant', "Sorry, I'm having trouble connecting right now. Please reach us directly at info@triaxistechnologies.com or 0530848374 / 0593998578.");
   } finally {
     setInputDisabled(false);
     document.getElementById('cb-input').focus();
