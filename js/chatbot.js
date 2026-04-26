@@ -38,7 +38,9 @@ const conversationHistory = [];
 
 const lead = { name: null, email: null, preferred_time: null, saved: false };
 let collectingLead = false;
-let leadStep = null; // 'name' | 'email' | 'time'
+let leadStep = null; // 'name' | 'email' | 'time' | 'interest'
+let leadSource = null; // 'schedule' | 'info'
+let infoInterestDetected = false;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -62,12 +64,29 @@ function wantsToSchedule(text) {
   return /\b(schedule|book|set up|arrange|call|meeting|discovery|appointment|talk|speak)\b/i.test(text);
 }
 
+function wantsInfo(text) {
+  return /\b(price|pricing|cost|how much|afford|budget|quote|estimate|service|package|solution|plan|offer|start|begin|get started|interested|more info|details|learn more|tell me more|capabilities|what can you|work with|need help|looking for|require|my (company|business|team|project)|we need|i need|can you help|would you|do you (handle|offer|do|provide)|our (company|business|team))\b/i.test(text);
+}
+
+function wantsToDecline(text) {
+  return /\b(no|nope|not now|later|no thanks|skip|don't|not interested|maybe later|not yet|some other time)\b/i.test(text);
+}
+
 async function handleLeadCollection(userText) {
   if (!collectingLead && !wantsToSchedule(userText)) return null;
+
+  // Handle declines gracefully at the name step
+  if (collectingLead && leadStep === 'name' && wantsToDecline(userText)) {
+    collectingLead = false;
+    leadStep = null;
+    leadSource = null;
+    return "No problem at all! Feel free to reach out whenever you're ready. Is there anything else I can help you with?";
+  }
 
   if (!collectingLead) {
     collectingLead = true;
     leadStep = 'name';
+    leadSource = 'schedule';
     return "I'd be happy to set that up! What's your full name?";
   }
 
@@ -87,8 +106,23 @@ async function handleLeadCollection(userText) {
       return "That doesn't look like a valid email. Please try again.";
     }
     lead.email = trimmed;
+    if (leadSource === 'info') {
+      leadStep = 'interest';
+      return "Perfect! What service or solution are you most interested in?";
+    }
     leadStep = 'time';
     return "Got it! What date and time works best for you?";
+  }
+
+  if (leadStep === 'interest') {
+    lead.preferred_time = `[Info request] ${userText.trim()}`;
+    const confirmedEmail = lead.email;
+    await saveLead();
+    lead.name = null; lead.email = null; lead.preferred_time = null; lead.saved = false;
+    collectingLead = false;
+    leadStep = null;
+    leadSource = null;
+    return `Great! I've passed your details to the TriAxis team and they'll reach out to you at ${confirmedEmail} shortly. Is there anything else I can help with?`;
   }
 
   if (leadStep === 'time') {
@@ -98,10 +132,17 @@ async function handleLeadCollection(userText) {
     lead.name = null; lead.email = null; lead.preferred_time = null; lead.saved = false;
     collectingLead = false;
     leadStep = null;
+    leadSource = null;
     return `Perfect! Your request has been sent to the TriAxis team. They'll review it and send a confirmation to ${confirmedEmail}. Is there anything else I can help you with?`;
   }
 
   return null;
+}
+
+function shouldPromptForLead(userText) {
+  if (lead.saved || collectingLead || infoInterestDetected) return false;
+  if (sessionMessageCount < 2) return false;
+  return wantsInfo(userText);
 }
 
 async function getGroqResponse(userMessage) {
@@ -212,6 +253,16 @@ async function handleSend() {
       const reply = await getGroqResponse(text);
       setTyping(false);
       appendMessage('assistant', reply);
+
+      if (shouldPromptForLead(text)) {
+        infoInterestDetected = true;
+        collectingLead = true;
+        leadStep = 'name';
+        leadSource = 'info';
+        setTimeout(() => {
+          appendMessage('assistant', "It sounds like you're looking for the right IT partner. I'd love to connect you with our team — what's your full name?");
+        }, 800);
+      }
     }
   } catch {
     setTyping(false);
