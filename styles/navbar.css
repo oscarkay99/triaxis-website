@@ -36,12 +36,11 @@
 .navbar.scrolled .brand-logo {
   width: 154px; height: 46px;
 }
-:root[data-theme="night"] .nav-logo {
-  background: rgba(255,255,255,0.96);
-  padding: 4px 8px;
-}
+.brand-logo--dark { display: none; }
+:root[data-theme="night"] .brand-logo--light { display: none; }
+:root[data-theme="night"] .brand-logo--dark { display: block; }
 :root[data-theme="night"] .nav-logo:hover {
-  background: #fff;
+  background: rgba(255,255,255,0.06);
 }
 .nav-links {
   display: flex; align-items: center; gap: 4px; margin-left: auto;
