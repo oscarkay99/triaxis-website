@@ -30,6 +30,9 @@ function closeMenu() {
 hamburger.addEventListener('click', () => {
   navLinks.classList.toggle('open');
   hamburger.classList.toggle('open');
+  if (navLinks.classList.contains('open')) {
+    navLinks.style.top = navbar.offsetHeight + 'px';
+  }
 });
 
 document.querySelectorAll('.nav-links a').forEach(link => {
