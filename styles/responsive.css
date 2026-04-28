@@ -2,17 +2,18 @@
 
 /* ---- Tablet: 1024px ---- */
 @media (max-width: 1024px) {
-  .about-grid        { grid-template-columns: 1fr; gap: 48px; }
-  .about-badge       { right: 0; bottom: -20px; }
-  .footer-grid       { grid-template-columns: 1fr 1fr; gap: 32px; padding: 48px 0 36px; }
-  .services-grid     { grid-template-columns: repeat(2, 1fr); }
-  .portfolio-grid    { grid-template-columns: repeat(2, 1fr); }
-  .team-grid         { grid-template-columns: repeat(2, 1fr); }
-  .pricing-grid      { gap: 16px; }
+  .about-grid     { grid-template-columns: 1fr; gap: 48px; }
+  .about-badge    { right: 0; bottom: -20px; }
+  .footer-grid    { grid-template-columns: 1fr 1fr; gap: 32px; padding: 48px 0 36px; }
+  .services-grid  { grid-template-columns: repeat(2, 1fr); }
+  .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
+  .team-grid      { grid-template-columns: repeat(2, 1fr); }
+  .pricing-grid   { gap: 16px; }
 }
 
-/* ---- Nav collapse at 900px (catches small tablets before content gets cramped) ---- */
+/* ---- Nav collapse: 900px ---- */
 @media (max-width: 900px) {
+  .nav-container  { gap: 12px; }
   .nav-links, .nav-cta { display: none; }
   .hamburger { display: flex; }
   .nav-links.open {
@@ -27,13 +28,21 @@
 
 /* ---- Mobile: 768px ---- */
 @media (max-width: 768px) {
-  .section { padding: 64px 0; }
+  .section        { padding: 64px 0; }
   .section-header { margin-bottom: 40px; }
-  .brand-logo { width: 148px; height: 44px; }
+  .brand-logo     { width: 148px; height: 44px; }
+
+  /* Grids → single column on phones */
+  .services-grid  { grid-template-columns: 1fr; }
+  .portfolio-grid { grid-template-columns: 1fr; }
+
+  /* Pricing */
+  .pricing-grid          { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
+  .pricing-card-featured { transform: none; }
 
   /* Hero */
   .hero-content { padding: 36px 20px 0; }
-  .hero-stats    { flex-wrap: wrap; padding: 28px 16px 48px; }
+  .hero-stats   { flex-wrap: wrap; padding: 28px 16px 48px; }
   .stat-item {
     border-right: none;
     border-bottom: 1px solid rgba(255,255,255,0.15);
@@ -42,10 +51,6 @@
   }
   .stat-item:last-child { border-bottom: none; }
 
-  /* Pricing */
-  .pricing-grid         { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
-  .pricing-card-featured { transform: none; }
-
   /* Contact */
   .contact-grid { grid-template-columns: 1fr; gap: 40px; }
   .form-row     { grid-template-columns: 1fr; }
@@ -53,10 +58,10 @@
   /* About values */
   .values-grid { grid-template-columns: 1fr; }
 
-  /* Testimonials — thumbnails get too cramped */
+  /* Testimonials */
   .testimonial-thumbnails { display: none; }
 
-  /* Footer bottom row */
+  /* Footer */
   .footer-bottom-inner { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
 }
 
@@ -65,24 +70,22 @@
   .section        { padding: 48px 0; }
   .section-header { margin-bottom: 32px; }
 
-  /* Grids → single column */
-  .services-grid  { grid-template-columns: 1fr; }
-  .portfolio-grid { grid-template-columns: 1fr; }
-  .team-grid      { grid-template-columns: 1fr; }
-  .footer-grid    { grid-template-columns: 1fr; gap: 24px; padding: 40px 0 28px; }
-  .pricing-grid   { max-width: 100%; }
+  /* Grids */
+  .team-grid   { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 24px; padding: 40px 0 28px; }
+  .pricing-grid { max-width: 100%; }
 
   /* Hero */
-  .brand-logo       { width: 132px; height: 40px; }
-  .hero-content h1  { font-size: 2rem; line-height: 1.1; }
-  .hero-content p   { font-size: 0.95rem; }
-  .hero-buttons     { flex-direction: column; align-items: stretch; width: 100%; max-width: 300px; margin: 0 auto; }
+  .brand-logo      { width: 132px; height: 40px; }
+  .hero-content h1 { font-size: 2rem; line-height: 1.1; }
+  .hero-content p  { font-size: 0.95rem; }
+  .hero-buttons    { flex-direction: column; align-items: stretch; width: 100%; max-width: 300px; margin: 0 auto; }
   .hero-buttons .btn { justify-content: center; }
-  .stat-item        { flex: 1 1 100%; }
+  .stat-item       { flex: 1 1 100%; }
 
   /* About badge */
-  .about-badge      { right: 12px; bottom: -14px; padding: 14px 16px; max-width: 170px; }
-  .about-badge-num  { font-size: 2rem; }
+  .about-badge     { right: 12px; bottom: -14px; padding: 14px 16px; max-width: 170px; }
+  .about-badge-num { font-size: 2rem; }
 
   /* Section headers */
   .section-header h2 { font-size: 1.75rem; }

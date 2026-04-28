@@ -4,7 +4,7 @@
 .about-image-wrap { position: relative; }
 .about-img { border-radius: 20px; width: 100%; object-fit: cover; aspect-ratio: 4/3; }
 .about-badge {
-  position: absolute; bottom: -24px; right: -24px;
+  position: absolute; bottom: -24px; right: -16px;
   background: var(--brown); color: #fff;
   padding: 20px 24px; border-radius: 16px;
   box-shadow: var(--shadow-lg);
