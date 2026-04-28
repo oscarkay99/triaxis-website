@@ -17,17 +17,18 @@
   .nav-links, .nav-cta { display: none; }
   .hamburger { display: flex; }
 
-  /* Full-screen menu overlay */
+  /* Full-screen menu overlay — sits below the navbar */
   .nav-links.open {
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 76px; left: 0; right: 0; bottom: 0;
     background: var(--cream);
-    padding: 88px 28px 40px;
+    padding: 16px 28px 40px;
     gap: 0;
     z-index: 98;
     overflow-y: auto;
+    border-top: 1px solid var(--border);
   }
 
   /* Nav items */
