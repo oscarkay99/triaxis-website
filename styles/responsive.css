@@ -109,6 +109,11 @@ img, video, svg { max-width: 100%; }
   .contact-grid   { grid-template-columns: 1fr !important; gap: 40px; }
   .values-grid    { grid-template-columns: 1fr !important; }
   .form-row       { grid-template-columns: 1fr !important; }
+  .footer-grid    { grid-template-columns: 1fr 1fr !important; gap: 28px; padding: 40px 0 28px; }
+
+  /* Footer bottom — stack contact info on mobile */
+  .footer-bottom-inner  { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .footer-contact-info  { flex-wrap: wrap; gap: 4px; font-size: 0.78rem; line-height: 1.6; }
 
   /* Service card images — taller on mobile for better visual weight */
   .service-img-wrap { height: 220px; }
@@ -152,7 +157,7 @@ img, video, svg { max-width: 100%; }
 
   /* Grids */
   .team-grid   { grid-template-columns: 1fr !important; }
-  .footer-grid { grid-template-columns: 1fr !important; gap: 24px; padding: 40px 0 28px; }
+  .footer-grid { grid-template-columns: 1fr !important; gap: 20px; padding: 36px 0 24px; }
   .pricing-grid { max-width: 100%; }
 
   /* Hero */
