@@ -96,5 +96,18 @@
 :root[data-theme="day"] .theme-toggle-sun {
   color: var(--dark);
 }
-.hamburger { display: none; flex-direction: column; gap: 5px; padding: 4px; margin-left: auto; }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  padding: 8px; margin-left: auto;
+  border-radius: 8px; transition: background 0.2s;
+}
+.hamburger:hover { background: var(--cream-2); }
 .hamburger span { display: block; width: 22px; height: 2px; background: var(--dark); border-radius: 2px; transition: all 0.3s; }
+
+/* Hamburger → X when open */
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile menu CTA — hidden on desktop */
+.nav-mobile-cta { display: none; }
