@@ -88,8 +88,11 @@
   .brand-logo     { width: 148px; height: 44px; }
 
   /* Grids → single column on phones */
-  .services-grid  { grid-template-columns: 1fr; }
+  .services-grid  { grid-template-columns: 1fr !important; }
   .portfolio-grid { grid-template-columns: 1fr; }
+
+  /* Service card images — taller on mobile for better visual weight */
+  .service-img-wrap { height: 220px; }
 
   /* Pricing */
   .pricing-grid          { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
