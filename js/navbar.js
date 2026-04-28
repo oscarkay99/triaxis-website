@@ -22,16 +22,25 @@ window.addEventListener('scroll', () => {
   navbar.classList.toggle('scrolled', window.scrollY > 40);
 });
 
+function closeMenu() {
+  navLinks.classList.remove('open');
+  hamburger.classList.remove('open');
+}
+
 hamburger.addEventListener('click', () => {
   navLinks.classList.toggle('open');
   hamburger.classList.toggle('open');
 });
 
 document.querySelectorAll('.nav-links a').forEach(link => {
-  link.addEventListener('click', () => {
-    navLinks.classList.remove('open');
-    hamburger.classList.remove('open');
-  });
+  link.addEventListener('click', closeMenu);
+});
+
+// Close when tapping the dim overlay (outside the drawer)
+document.addEventListener('click', (e) => {
+  if (navLinks.classList.contains('open') && !navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+    closeMenu();
+  }
 });
 
 if (themeToggle) {
