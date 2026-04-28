@@ -16,6 +16,20 @@
   border-radius: 12px; display: flex; align-items: center; justify-content: center;
   margin-bottom: 18px; color: var(--brown); box-shadow: var(--shadow);
 }
+.service-img-wrap {
+  width: calc(100% + 56px);
+  margin: -28px -28px 20px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  overflow: hidden;
+  height: 180px;
+}
+.service-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.service-card:hover .service-img-wrap img { transform: scale(1.04); }
 .service-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; color: var(--dark); }
 .service-card p { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
 .service-tags { display: flex; flex-wrap: wrap; gap: 6px; }
