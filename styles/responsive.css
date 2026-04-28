@@ -1,5 +1,17 @@
 /* ===== RESPONSIVE ===== */
 
+/* ---- Global: prevent all horizontal scroll ---- */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+.section, .hero, .testimonials, .footer {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+* { box-sizing: border-box; }
+img, video, svg { max-width: 100%; }
+
 /* ---- Tablet: 1024px ---- */
 @media (max-width: 1024px) {
   .about-grid     { grid-template-columns: 1fr; gap: 48px; }
@@ -83,41 +95,51 @@
 
 /* ---- Mobile: 768px ---- */
 @media (max-width: 768px) {
-  .section        { padding: 64px 0; }
+  .section        { padding: 64px 0; overflow-x: hidden; }
   .section-header { margin-bottom: 40px; }
   .brand-logo     { width: 148px; height: 44px; }
 
-  /* Grids → single column on phones */
+  /* Container must not overflow */
+  .container { padding: 0 16px; }
+
+  /* All grids → single column */
   .services-grid  { grid-template-columns: 1fr !important; }
-  .portfolio-grid { grid-template-columns: 1fr; }
+  .portfolio-grid { grid-template-columns: 1fr !important; }
+  .pricing-grid   { grid-template-columns: 1fr !important; max-width: 440px; margin-left: auto; margin-right: auto; }
+  .contact-grid   { grid-template-columns: 1fr !important; gap: 40px; }
+  .values-grid    { grid-template-columns: 1fr !important; }
+  .form-row       { grid-template-columns: 1fr !important; }
 
   /* Service card images — taller on mobile for better visual weight */
   .service-img-wrap { height: 220px; }
 
+  /* Portfolio image proportions */
+  .portfolio-img-wrap { aspect-ratio: 16/9; }
+
   /* Pricing */
-  .pricing-grid          { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
   .pricing-card-featured { transform: none; }
 
   /* Hero */
   .hero-content { padding: 36px 20px 0; }
-  .hero-stats   { flex-wrap: wrap; padding: 28px 16px 48px; }
+  .hero-stats   { flex-wrap: wrap; padding: 28px 16px 48px; width: 100%; }
   .stat-item {
     border-right: none;
     border-bottom: 1px solid rgba(255,255,255,0.15);
     padding: 14px 20px;
     flex: 1 1 45%;
+    min-width: 0;
   }
   .stat-item:last-child { border-bottom: none; }
 
-  /* Contact */
-  .contact-grid { grid-template-columns: 1fr; gap: 40px; }
-  .form-row     { grid-template-columns: 1fr; }
-
-  /* About values */
-  .values-grid { grid-template-columns: 1fr; }
-
   /* Testimonials */
   .testimonial-thumbnails { display: none; }
+  .testimonial-slider     { max-width: 100%; padding: 0 4px; }
+  blockquote              { font-size: 1rem; }
+  .testimonial-author     { flex-direction: column; gap: 8px; }
+
+  /* Portfolio filters */
+  .portfolio-filters { gap: 6px; }
+  .filter-btn        { padding: 7px 14px; font-size: 0.82rem; }
 
   /* Footer */
   .footer-bottom-inner { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
@@ -129,8 +151,8 @@
   .section-header { margin-bottom: 32px; }
 
   /* Grids */
-  .team-grid   { grid-template-columns: 1fr; }
-  .footer-grid { grid-template-columns: 1fr; gap: 24px; padding: 40px 0 28px; }
+  .team-grid   { grid-template-columns: 1fr !important; }
+  .footer-grid { grid-template-columns: 1fr !important; gap: 24px; padding: 40px 0 28px; }
   .pricing-grid { max-width: 100%; }
 
   /* Hero */
@@ -147,4 +169,19 @@
 
   /* Section headers */
   .section-header h2 { font-size: 1.75rem; }
+
+  /* Pricing toggle */
+  .pricing-toggle { flex-wrap: wrap; justify-content: center; }
+
+  /* Service image */
+  .service-img-wrap { height: 200px; }
+}
+
+/* ---- Extra small: 360px ---- */
+@media (max-width: 360px) {
+  .container { padding: 0 12px; }
+  .section-header h2 { font-size: 1.55rem; }
+  .hero-content h1   { font-size: 1.75rem; }
+  .hero-buttons      { max-width: 100%; }
+  .service-img-wrap  { height: 180px; }
 }
