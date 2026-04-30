@@ -34,30 +34,92 @@ Contact:
 
 Keep responses short and friendly. Use plain text — no markdown symbols like ** or ##. If someone asks for a calculation (e.g. annual savings, plan costs), compute it and give the exact answer.`;
 
-const conversationHistory = [];
+const CHATBOT_STORAGE_KEY = 'triaxis-chatbot-state-v1';
+const MAX_STORED_MESSAGES = 24;
+const MAX_CONTEXT_MESSAGES = 10;
+const MAX_SUMMARY_CHARS = 1400;
+const DEFAULT_GREETING = "Hi! I'm the TriAxis assistant. Ask me anything about our services, pricing, or how to get started.";
+const CALENDLY_URL = 'https://calendly.com/triaxistechnologies-info/30min';
+const CALENDLY_FALLBACK_EMAIL = 'info@triaxistechnologies.com';
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const conversationHistory = [];
 const lead = { name: null, email: null, preferred_time: null, saved: false };
+
 let collectingLead = false;
 let leadStep = null; // 'name' | 'email' | 'time' | 'interest'
 let leadSource = null; // 'schedule' | 'info'
 let infoInterestDetected = false;
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-// Rate limiting
 let lastSendTime = 0;
 let sessionMessageCount = 0;
+
 const SEND_COOLDOWN_MS = 3000;
 const MAX_SESSION_MESSAGES = 50;
 
-async function saveLead() {
-  if (lead.saved) return;
-  lead.saved = true;
+function safeJsonParse(value) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
 
-  const id = crypto.randomUUID();
-  await supabase
-    .from('chat_leads')
-    .insert({ id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time });
+function sanitizeStoredMessages(messages) {
+  if (!Array.isArray(messages)) return [];
+  return messages
+    .filter((entry) => entry && (entry.role === 'user' || entry.role === 'assistant') && typeof entry.content === 'string')
+    .map((entry) => ({
+      role: entry.role,
+      content: entry.content.slice(0, 1000),
+    }))
+    .slice(-MAX_STORED_MESSAGES);
+}
+
+function buildConversationSummary() {
+  if (conversationHistory.length <= MAX_CONTEXT_MESSAGES) return '';
+
+  const olderMessages = conversationHistory.slice(0, -MAX_CONTEXT_MESSAGES);
+  const summary = olderMessages
+    .map((entry) => `${entry.role === 'user' ? 'Visitor' : 'Assistant'}: ${entry.content.replace(/\s+/g, ' ').trim()}`)
+    .join(' | ');
+
+  return summary.slice(0, MAX_SUMMARY_CHARS);
+}
+
+function saveChatState() {
+  try {
+    localStorage.setItem(CHATBOT_STORAGE_KEY, JSON.stringify({
+      conversationHistory: conversationHistory.slice(-MAX_STORED_MESSAGES),
+      lead,
+      collectingLead,
+      leadStep,
+      leadSource,
+      infoInterestDetected,
+      sessionMessageCount,
+    }));
+  } catch {
+    // Ignore storage failures and keep the chat usable for the current visit.
+  }
+}
+
+function restoreChatState() {
+  const stored = safeJsonParse(localStorage.getItem(CHATBOT_STORAGE_KEY));
+  if (!stored) return;
+
+  conversationHistory.splice(0, conversationHistory.length, ...sanitizeStoredMessages(stored.conversationHistory));
+
+  if (stored.lead && typeof stored.lead === 'object') {
+    lead.name = stored.lead.name || null;
+    lead.email = stored.lead.email || null;
+    lead.preferred_time = stored.lead.preferred_time || null;
+    lead.saved = Boolean(stored.lead.saved);
+  }
+
+  collectingLead = Boolean(stored.collectingLead);
+  leadStep = ['name', 'email', 'time', 'interest'].includes(stored.leadStep) ? stored.leadStep : null;
+  leadSource = ['schedule', 'info'].includes(stored.leadSource) ? stored.leadSource : null;
+  infoInterestDetected = Boolean(stored.infoInterestDetected);
+  sessionMessageCount = Number.isFinite(stored.sessionMessageCount) ? Math.max(0, stored.sessionMessageCount) : 0;
 }
 
 function wantsToSchedule(text) {
@@ -72,14 +134,39 @@ function wantsToDecline(text) {
   return /\b(no|nope|not now|later|no thanks|skip|don't|not interested|maybe later|not yet|some other time)\b/i.test(text);
 }
 
+async function saveLead() {
+  if (lead.saved) return;
+  lead.saved = true;
+
+  const id = crypto.randomUUID();
+  await supabase
+    .from('chat_leads')
+    .insert({ id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time });
+  saveChatState();
+}
+
+function openCalendlyBooking() {
+  if (!window.Calendly?.initPopupWidget || !lead.name || !lead.email) return false;
+
+  window.Calendly.initPopupWidget({
+    url: `${CALENDLY_URL}?hide_gdpr_banner=1`,
+    prefill: {
+      name: lead.name,
+      email: lead.email,
+    },
+  });
+
+  return true;
+}
+
 async function handleLeadCollection(userText) {
   if (!collectingLead && !wantsToSchedule(userText)) return null;
 
-  // Handle declines gracefully at the name step
   if (collectingLead && leadStep === 'name' && wantsToDecline(userText)) {
     collectingLead = false;
     leadStep = null;
     leadSource = null;
+    saveChatState();
     return "No problem at all! Feel free to reach out whenever you're ready. Is there anything else I can help you with?";
   }
 
@@ -87,16 +174,18 @@ async function handleLeadCollection(userText) {
     collectingLead = true;
     leadStep = 'name';
     leadSource = 'schedule';
+    saveChatState();
     return "I'd be happy to set that up! What's your full name?";
   }
 
   if (leadStep === 'name') {
     const trimmed = userText.trim();
     if (trimmed.split(' ').length < 2) {
-      return "Please provide your full name (first and last name).";
+      return 'Please provide your full name (first and last name).';
     }
     lead.name = trimmed;
     leadStep = 'email';
+    saveChatState();
     return `Thanks, ${lead.name.split(' ')[0]}! What's your email address?`;
   }
 
@@ -108,20 +197,37 @@ async function handleLeadCollection(userText) {
     lead.email = trimmed;
     if (leadSource === 'info') {
       leadStep = 'interest';
-      return "Perfect! What service or solution are you most interested in?";
+      saveChatState();
+      return 'Perfect! What service or solution are you most interested in?';
     }
-    leadStep = 'time';
-    return "Got it! What date and time works best for you?";
+    leadStep = null;
+    collectingLead = false;
+    const bookingOpened = openCalendlyBooking();
+    lead.preferred_time = bookingOpened ? '[Calendly popup opened]' : '[Calendly booking requested]';
+    await saveLead();
+    lead.name = null;
+    lead.email = null;
+    lead.preferred_time = null;
+    lead.saved = false;
+    leadSource = null;
+    saveChatState();
+    return bookingOpened
+      ? `Perfect! I’ve opened our booking calendar for you, and your details should already be filled in. If the scheduler does not appear, email us at ${CALENDLY_FALLBACK_EMAIL} and we’ll arrange your session directly.`
+      : `Perfect! I have your details, but the booking window could not open on this device. Please email us at ${CALENDLY_FALLBACK_EMAIL} and we’ll arrange your session directly.`;
   }
 
   if (leadStep === 'interest') {
     lead.preferred_time = `[Info request] ${userText.trim()}`;
     const confirmedEmail = lead.email;
     await saveLead();
-    lead.name = null; lead.email = null; lead.preferred_time = null; lead.saved = false;
+    lead.name = null;
+    lead.email = null;
+    lead.preferred_time = null;
+    lead.saved = false;
     collectingLead = false;
     leadStep = null;
     leadSource = null;
+    saveChatState();
     return `Great! I've passed your details to the TriAxis team and they'll reach out to you at ${confirmedEmail} shortly. Is there anything else I can help with?`;
   }
 
@@ -129,10 +235,14 @@ async function handleLeadCollection(userText) {
     lead.preferred_time = userText.trim();
     const confirmedEmail = lead.email;
     await saveLead();
-    lead.name = null; lead.email = null; lead.preferred_time = null; lead.saved = false;
+    lead.name = null;
+    lead.email = null;
+    lead.preferred_time = null;
+    lead.saved = false;
     collectingLead = false;
     leadStep = null;
     leadSource = null;
+    saveChatState();
     return `Perfect! Your request has been sent to the TriAxis team. They'll review it and send a confirmation to ${confirmedEmail}. Is there anything else I can help you with?`;
   }
 
@@ -147,12 +257,19 @@ function shouldPromptForLead(userText) {
 
 async function getGroqResponse(userMessage) {
   conversationHistory.push({ role: 'user', content: userMessage });
+  saveChatState();
 
-  const fullMessages = [{ role: 'system', content: SYSTEM_PROMPT }, ...conversationHistory];
+  const summary = buildConversationSummary();
+  const recentMessages = conversationHistory.slice(-MAX_CONTEXT_MESSAGES);
+  const fullMessages = [
+    { role: 'system', content: SYSTEM_PROMPT },
+    ...(summary ? [{ role: 'system', content: `Conversation summary so far: ${summary}` }] : []),
+    ...recentMessages,
+  ];
+
   let reply;
 
   if (GROQ_KEY) {
-    // Local dev: call Groq directly (key only exists in .env, never in production build)
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -170,7 +287,6 @@ async function getGroqResponse(userMessage) {
     const data = await res.json();
     reply = data.choices?.[0]?.message?.content;
   } else {
-    // Production: Groq key lives server-side in the edge function
     const res = await fetch(`${SUPABASE_URL}/functions/v1/chat`, {
       method: 'POST',
       headers: {
@@ -187,10 +303,11 @@ async function getGroqResponse(userMessage) {
 
   if (!reply) throw new Error('Empty response');
   conversationHistory.push({ role: 'assistant', content: reply });
+  saveChatState();
   return reply;
 }
 
-function appendMessage(role, text) {
+function appendMessage(role, text, persist = true) {
   const log = document.getElementById('cb-log');
   const wrap = document.createElement('div');
   wrap.className = `cb-msg cb-msg--${role}`;
@@ -202,6 +319,22 @@ function appendMessage(role, text) {
   wrap.appendChild(bubble);
   log.appendChild(wrap);
   log.scrollTop = log.scrollHeight;
+
+  if (persist) saveChatState();
+}
+
+function renderConversationHistory() {
+  const log = document.getElementById('cb-log');
+  if (!log) return;
+
+  log.innerHTML = '';
+
+  if (!conversationHistory.length) {
+    appendMessage('assistant', DEFAULT_GREETING, false);
+    return;
+  }
+
+  conversationHistory.forEach((entry) => appendMessage(entry.role, entry.content, false));
 }
 
 function setTyping(show) {
@@ -243,11 +376,13 @@ async function handleSend() {
   appendMessage('user', text);
   setTyping(true);
   setInputDisabled(true);
+  saveChatState();
 
   try {
     const leadReply = await handleLeadCollection(text);
     if (leadReply) {
       setTyping(false);
+      conversationHistory.push({ role: 'assistant', content: leadReply });
       appendMessage('assistant', leadReply);
     } else {
       const reply = await getGroqResponse(text);
@@ -259,14 +394,19 @@ async function handleSend() {
         collectingLead = true;
         leadStep = 'name';
         leadSource = 'info';
+        saveChatState();
         setTimeout(() => {
-          appendMessage('assistant', "It sounds like you're looking for the right IT partner. I'd love to connect you with our team — what's your full name?");
+          const prompt = "It sounds like you're looking for the right IT partner. I'd love to connect you with our team — what's your full name?";
+          conversationHistory.push({ role: 'assistant', content: prompt });
+          appendMessage('assistant', prompt);
         }, 800);
       }
     }
   } catch {
     setTyping(false);
-    appendMessage('assistant', "Sorry, I'm having trouble connecting right now. Please reach us directly at info@triaxistechnologies.com or 0530848374 / 0593998578.");
+    const fallback = "Sorry, I'm having trouble connecting right now. Please reach us directly at info@triaxistechnologies.com or 0530848374 / 0593998578.";
+    conversationHistory.push({ role: 'assistant', content: fallback });
+    appendMessage('assistant', fallback);
   } finally {
     setInputDisabled(false);
     document.getElementById('cb-input').focus();
@@ -280,6 +420,9 @@ function initChatbot() {
   const cbWindow = document.getElementById('cb-window');
   const input = document.getElementById('cb-input');
   const form = document.getElementById('cb-form');
+
+  restoreChatState();
+  renderConversationHistory();
 
   toggleBtn.addEventListener('click', () => {
     const isOpen = cbWindow.classList.toggle('cb-window--open');
