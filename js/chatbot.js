@@ -1,4 +1,9 @@
 import { supabase } from './supabase.js';
+import {
+  buildKnowledgeContext,
+  detectKnowledgeTopic,
+  getKnowledgeFallbackAnswer,
+} from './chatbot-knowledge.js';
 
 const GROQ_KEY = import.meta.env.VITE_GROQ_KEY; // only set in local dev
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -42,30 +47,6 @@ const CALENDLY_URL = 'https://calendly.com/triaxistechnologies-info/30min';
 const CALENDLY_FALLBACK_EMAIL = 'info@triaxistechnologies.com';
 const CALENDLY_ACTION_MARKER = '__triaxis_calendly_action__';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const TOPIC_PATTERNS = [
-  { topic: 'automation', pattern: /\b(automation|automations|workflow|workflows|rpa|process automation|no-code|api integration)\b/i },
-  { topic: 'software', pattern: /\b(software|app|apps|application|applications|web app|mobile app|saas|platform|mvp|api|custom development)\b/i },
-  { topic: 'cloud', pattern: /\b(cloud|aws|azure|gcp|google cloud|devops|docker|kubernetes|migration|ci\/cd)\b/i },
-  { topic: 'cybersecurity', pattern: /\b(cyber|security|compliance|penetration|pen test|gdpr|iso 27001|soc 2|threat)\b/i },
-  { topic: 'data', pattern: /\b(data|analytics|dashboard|bi|warehouse|pipeline|bigquery|power bi|machine learning|ml)\b/i },
-  { topic: 'consulting', pattern: /\b(consulting|strategy|roadmap|governance|advisory|vendor selection|digital transformation)\b/i },
-  { topic: 'managed_it', pattern: /\b(managed it|helpdesk|support|maintenance|network|monitoring|it support|hardware)\b/i },
-  { topic: 'cctv', pattern: /\b(cctv|camera|surveillance|access control)\b/i },
-  { topic: 'solar', pattern: /\b(solar|inverter|panel|panels|energy backup|power solution)\b/i },
-  { topic: 'pricing', pattern: /\b(price|pricing|cost|quote|estimate|budget|plan|plans)\b/i },
-];
-const TOPIC_RESPONSES = {
-  automation: 'Our workflow automation service is built to remove repetitive manual work and speed up operations. We design approval flows, alerts, CRM and ERP automations, invoice and reporting automations, API integrations between tools, and no-code or low-code processes that reduce errors and improve turnaround time.',
-  software: 'Our custom software team builds web apps, mobile apps, internal business systems, customer portals, APIs, SaaS platforms, and MVPs. We handle product scoping, UI and UX, backend systems, integrations, testing, deployment, and post-launch support.',
-  cloud: 'Our cloud and DevOps work covers AWS, Azure, and Google Cloud. We help with migrations, architecture design, CI/CD pipelines, Docker, Kubernetes, observability, backups, scaling, and cost optimization so systems stay reliable and easier to manage.',
-  cybersecurity: 'Our cybersecurity service includes penetration testing, security reviews, compliance support, vulnerability management, hardening, monitoring, and security process improvements. We usually tailor this around your risk level, industry, and compliance targets.',
-  data: 'Our data engineering and analytics work includes pipelines, warehouses, dashboards, reporting automation, BI setup, and analytics workflows. We help teams turn scattered raw data into decision-ready reporting and operational visibility.',
-  consulting: 'Our consulting and strategy service helps businesses plan the right technology path. We support digital transformation, roadmap definition, architecture decisions, delivery planning, governance, and choosing the right vendors or tools.',
-  managed_it: 'Our managed IT support covers helpdesk, proactive maintenance, monitoring, network support, user support, procurement guidance, and operational reliability. It is designed for businesses that want an ongoing technology partner rather than one-off fixes.',
-  cctv: 'Our CCTV service covers site assessment, camera and recorder selection, installation, remote viewing setup, storage planning, and support. We can design systems for offices, retail spaces, schools, warehouses, and residential sites.',
-  solar: 'Our solar service covers assessment, sizing, inverter and battery planning, installation, and backup power design. We help businesses and homes reduce outages and improve power resilience with solutions matched to actual usage.',
-  pricing: 'Our managed IT plans start at $499 per month for Starter and $1,299 per month for Growth, while Enterprise is custom-priced. Project-based work such as software, cloud, cybersecurity, CCTV, solar, and automation is usually quoted after a short discovery discussion.',
-};
 
 const conversationHistory = [];
 const lead = { name: null, email: null, preferred_time: null, saved: false };
@@ -81,25 +62,6 @@ let activeTopic = null;
 
 const SEND_COOLDOWN_MS = 3000;
 const MAX_SESSION_MESSAGES = 50;
-
-function safeJsonParse(value) {
-  try {
-    return JSON.parse(value);
-  } catch {
-    return null;
-  }
-}
-
-function sanitizeStoredMessages(messages) {
-  if (!Array.isArray(messages)) return [];
-  return messages
-    .filter((entry) => entry && (entry.role === 'user' || entry.role === 'assistant') && typeof entry.content === 'string')
-    .map((entry) => ({
-      role: entry.role,
-      content: entry.content.slice(0, 1000),
-    }))
-    .slice(-MAX_STORED_MESSAGES);
-}
 
 function buildConversationSummary() {
   if (conversationHistory.length <= MAX_CONTEXT_MESSAGES) return '';
@@ -143,52 +105,21 @@ function wantsToDecline(text) {
   return /\b(no|nope|not now|later|no thanks|skip|don't|not interested|maybe later|not yet|some other time)\b/i.test(text);
 }
 
-function detectTopic(text) {
-  const match = TOPIC_PATTERNS.find(({ pattern }) => pattern.test(text));
-  return match ? match.topic : null;
-}
-
 function updateActiveTopic(text) {
-  const detected = detectTopic(text);
+  const detected = detectKnowledgeTopic(text, conversationHistory);
   if (detected) activeTopic = detected;
   return detected;
-}
-
-function isTopicFollowUp(text) {
-  return /\b(tell me more|more about|explain|expand|go deeper|details|how does that work|how do you do that|what about that)\b/i.test(text);
 }
 
 function getLocalFallbackResponse(userText) {
   const text = userText.trim();
   if (!text) return null;
-  const detectedTopic = updateActiveTopic(text);
+  updateActiveTopic(text);
 
   if (wantsToSchedule(text)) {
     return "I can help with that. If you'd like to book a session, tell me you'd like to schedule a call and I'll collect your name and email before opening the booking calendar.";
   }
-
-  if ((detectedTopic && TOPIC_RESPONSES[detectedTopic]) || (isTopicFollowUp(text) && activeTopic && TOPIC_RESPONSES[activeTopic])) {
-    const topic = detectedTopic || activeTopic;
-    return `${TOPIC_RESPONSES[topic]} If you want, I can also help you book a discovery call so the TriAxis team can scope your needs properly.`;
-  }
-
-  if (/\b(service|services|offer|do you do|what can you do|capabilities)\b/i.test(text)) {
-    return 'We offer custom software development, cloud infrastructure and DevOps, cybersecurity and compliance, data engineering and analytics, IT consulting and strategy, managed IT support, CCTV installation, solar installation, and workflow automation.';
-  }
-
-  if (/\b(price|pricing|cost|how much|quote|estimate|plan|plans)\b/i.test(text)) {
-    return 'Our managed IT plans start at $499 per month for Starter and $1,299 per month for Growth, while Enterprise is custom-priced. For project-based work like software, cloud, cybersecurity, CCTV, solar, or automation, we usually scope your needs first and then provide a tailored quote.';
-  }
-
-  if (/\b(contact|email|phone|call you|reach you|address|location)\b/i.test(text)) {
-    return 'You can reach TriAxis at info@triaxistechnologies.com or call 0530848374 / 0593998578. We are based in Accra, Ghana.';
-  }
-
-  if (/\b(hello|hi|hey|good morning|good afternoon|good evening)\b/i.test(text)) {
-    return "Hi! I can help with our services, pricing, project inquiries, or booking a discovery call.";
-  }
-
-  return null;
+  return getKnowledgeFallbackAnswer(text, conversationHistory, activeTopic);
 }
 
 async function saveLead() {
@@ -352,9 +283,11 @@ async function getGroqResponse(userMessage) {
 
   const summary = buildConversationSummary();
   const recentMessages = conversationHistory.slice(-MAX_CONTEXT_MESSAGES);
+  const knowledgeContext = buildKnowledgeContext(userMessage, recentMessages);
   const fullMessages = [
     { role: 'system', content: SYSTEM_PROMPT },
     ...(summary ? [{ role: 'system', content: `Conversation summary so far: ${summary}` }] : []),
+    ...(knowledgeContext ? [{ role: 'system', content: `Relevant TriAxis knowledge:\n${knowledgeContext}` }] : []),
     ...recentMessages,
   ];
 
