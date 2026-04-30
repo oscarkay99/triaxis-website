@@ -11,7 +11,7 @@
   <meta name="author" content="TriAxis Technologies" />
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#071727" media="(prefers-color-scheme: dark)" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.calendly.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://lyofkbxitfkkchlcvhyf.supabase.co; frame-src https://calendly.com; object-src 'none'; base-uri 'self'; form-action 'self';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://assets.calendly.com https://calendly.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://assets.calendly.com https://calendly.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://lyofkbxitfkkchlcvhyf.supabase.co https://calendly.com https://assets.calendly.com; frame-src https://calendly.com https://*.calendly.com; object-src 'none'; base-uri 'self'; form-action 'self';" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <link rel="canonical" href="https://triaxistechnologies.com/" />
   <meta property="og:type" content="website" />
@@ -142,6 +142,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://assets.calendly.com/assets/external/widget.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 </head>
 <body>
@@ -1057,7 +1058,7 @@
     </div>
   </div>
 
-  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+  <script src="https://assets.calendly.com/assets/external/widget.js"></script>
   <script type="module" src="main.js"></script>
 </body>
 </html>

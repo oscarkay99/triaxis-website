@@ -34,15 +34,38 @@ Contact:
 
 Keep responses short and friendly. Use plain text — no markdown symbols like ** or ##. If someone asks for a calculation (e.g. annual savings, plan costs), compute it and give the exact answer.`;
 
-const CHATBOT_STORAGE_KEY = 'triaxis-chatbot-state-v2';
-const CHATBOT_LEGACY_STORAGE_KEYS = ['triaxis-chatbot-state-v1'];
 const MAX_STORED_MESSAGES = 24;
 const MAX_CONTEXT_MESSAGES = 10;
 const MAX_SUMMARY_CHARS = 1400;
 const DEFAULT_GREETING = "Hi! I'm the TriAxis assistant. Ask me anything about our services, pricing, or how to get started.";
 const CALENDLY_URL = 'https://calendly.com/triaxistechnologies-info/30min';
 const CALENDLY_FALLBACK_EMAIL = 'info@triaxistechnologies.com';
+const CALENDLY_ACTION_MARKER = '__triaxis_calendly_action__';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const TOPIC_PATTERNS = [
+  { topic: 'automation', pattern: /\b(automation|automations|workflow|workflows|rpa|process automation|no-code|api integration)\b/i },
+  { topic: 'software', pattern: /\b(software|app|apps|application|applications|web app|mobile app|saas|platform|mvp|api|custom development)\b/i },
+  { topic: 'cloud', pattern: /\b(cloud|aws|azure|gcp|google cloud|devops|docker|kubernetes|migration|ci\/cd)\b/i },
+  { topic: 'cybersecurity', pattern: /\b(cyber|security|compliance|penetration|pen test|gdpr|iso 27001|soc 2|threat)\b/i },
+  { topic: 'data', pattern: /\b(data|analytics|dashboard|bi|warehouse|pipeline|bigquery|power bi|machine learning|ml)\b/i },
+  { topic: 'consulting', pattern: /\b(consulting|strategy|roadmap|governance|advisory|vendor selection|digital transformation)\b/i },
+  { topic: 'managed_it', pattern: /\b(managed it|helpdesk|support|maintenance|network|monitoring|it support|hardware)\b/i },
+  { topic: 'cctv', pattern: /\b(cctv|camera|surveillance|access control)\b/i },
+  { topic: 'solar', pattern: /\b(solar|inverter|panel|panels|energy backup|power solution)\b/i },
+  { topic: 'pricing', pattern: /\b(price|pricing|cost|quote|estimate|budget|plan|plans)\b/i },
+];
+const TOPIC_RESPONSES = {
+  automation: 'Our workflow automation service is built to remove repetitive manual work and speed up operations. We design approval flows, alerts, CRM and ERP automations, invoice and reporting automations, API integrations between tools, and no-code or low-code processes that reduce errors and improve turnaround time.',
+  software: 'Our custom software team builds web apps, mobile apps, internal business systems, customer portals, APIs, SaaS platforms, and MVPs. We handle product scoping, UI and UX, backend systems, integrations, testing, deployment, and post-launch support.',
+  cloud: 'Our cloud and DevOps work covers AWS, Azure, and Google Cloud. We help with migrations, architecture design, CI/CD pipelines, Docker, Kubernetes, observability, backups, scaling, and cost optimization so systems stay reliable and easier to manage.',
+  cybersecurity: 'Our cybersecurity service includes penetration testing, security reviews, compliance support, vulnerability management, hardening, monitoring, and security process improvements. We usually tailor this around your risk level, industry, and compliance targets.',
+  data: 'Our data engineering and analytics work includes pipelines, warehouses, dashboards, reporting automation, BI setup, and analytics workflows. We help teams turn scattered raw data into decision-ready reporting and operational visibility.',
+  consulting: 'Our consulting and strategy service helps businesses plan the right technology path. We support digital transformation, roadmap definition, architecture decisions, delivery planning, governance, and choosing the right vendors or tools.',
+  managed_it: 'Our managed IT support covers helpdesk, proactive maintenance, monitoring, network support, user support, procurement guidance, and operational reliability. It is designed for businesses that want an ongoing technology partner rather than one-off fixes.',
+  cctv: 'Our CCTV service covers site assessment, camera and recorder selection, installation, remote viewing setup, storage planning, and support. We can design systems for offices, retail spaces, schools, warehouses, and residential sites.',
+  solar: 'Our solar service covers assessment, sizing, inverter and battery planning, installation, and backup power design. We help businesses and homes reduce outages and improve power resilience with solutions matched to actual usage.',
+  pricing: 'Our managed IT plans start at $499 per month for Starter and $1,299 per month for Growth, while Enterprise is custom-priced. Project-based work such as software, cloud, cybersecurity, CCTV, solar, and automation is usually quoted after a short discovery discussion.',
+};
 
 const conversationHistory = [];
 const lead = { name: null, email: null, preferred_time: null, saved: false };
@@ -53,6 +76,8 @@ let leadSource = null; // 'schedule' | 'info'
 let infoInterestDetected = false;
 let lastSendTime = 0;
 let sessionMessageCount = 0;
+let pendingBookingDetails = null;
+let activeTopic = null;
 
 const SEND_COOLDOWN_MS = 3000;
 const MAX_SESSION_MESSAGES = 50;
@@ -88,47 +113,22 @@ function buildConversationSummary() {
 }
 
 function saveChatState() {
-  try {
-    localStorage.setItem(CHATBOT_STORAGE_KEY, JSON.stringify({
-      conversationHistory: conversationHistory.slice(-MAX_STORED_MESSAGES),
-      lead,
-      collectingLead,
-      leadStep,
-      leadSource,
-      infoInterestDetected,
-      sessionMessageCount,
-    }));
-  } catch {
-    // Ignore storage failures and keep the chat usable for the current visit.
-  }
+  // Chat state now lives only in memory for the current page session.
 }
 
 function restoreChatState() {
-  CHATBOT_LEGACY_STORAGE_KEYS.forEach((key) => {
-    try {
-      localStorage.removeItem(key);
-    } catch {
-      // Ignore storage cleanup failures.
-    }
-  });
-
-  const stored = safeJsonParse(localStorage.getItem(CHATBOT_STORAGE_KEY));
-  if (!stored) return;
-
-  conversationHistory.splice(0, conversationHistory.length, ...sanitizeStoredMessages(stored.conversationHistory));
-
-  if (stored.lead && typeof stored.lead === 'object') {
-    lead.name = stored.lead.name || null;
-    lead.email = stored.lead.email || null;
-    lead.preferred_time = stored.lead.preferred_time || null;
-    lead.saved = Boolean(stored.lead.saved);
-  }
-
-  collectingLead = Boolean(stored.collectingLead);
-  leadStep = ['name', 'email', 'time', 'interest'].includes(stored.leadStep) ? stored.leadStep : null;
-  leadSource = ['schedule', 'info'].includes(stored.leadSource) ? stored.leadSource : null;
-  infoInterestDetected = Boolean(stored.infoInterestDetected);
-  sessionMessageCount = Number.isFinite(stored.sessionMessageCount) ? Math.max(0, stored.sessionMessageCount) : 0;
+  conversationHistory.splice(0, conversationHistory.length);
+  lead.name = null;
+  lead.email = null;
+  lead.preferred_time = null;
+  lead.saved = false;
+  collectingLead = false;
+  leadStep = null;
+  leadSource = null;
+  infoInterestDetected = false;
+  sessionMessageCount = 0;
+  pendingBookingDetails = null;
+  activeTopic = null;
 }
 
 function wantsToSchedule(text) {
@@ -143,6 +143,54 @@ function wantsToDecline(text) {
   return /\b(no|nope|not now|later|no thanks|skip|don't|not interested|maybe later|not yet|some other time)\b/i.test(text);
 }
 
+function detectTopic(text) {
+  const match = TOPIC_PATTERNS.find(({ pattern }) => pattern.test(text));
+  return match ? match.topic : null;
+}
+
+function updateActiveTopic(text) {
+  const detected = detectTopic(text);
+  if (detected) activeTopic = detected;
+  return detected;
+}
+
+function isTopicFollowUp(text) {
+  return /\b(tell me more|more about|explain|expand|go deeper|details|how does that work|how do you do that|what about that)\b/i.test(text);
+}
+
+function getLocalFallbackResponse(userText) {
+  const text = userText.trim();
+  if (!text) return null;
+  const detectedTopic = updateActiveTopic(text);
+
+  if (wantsToSchedule(text)) {
+    return "I can help with that. If you'd like to book a session, tell me you'd like to schedule a call and I'll collect your name and email before opening the booking calendar.";
+  }
+
+  if ((detectedTopic && TOPIC_RESPONSES[detectedTopic]) || (isTopicFollowUp(text) && activeTopic && TOPIC_RESPONSES[activeTopic])) {
+    const topic = detectedTopic || activeTopic;
+    return `${TOPIC_RESPONSES[topic]} If you want, I can also help you book a discovery call so the TriAxis team can scope your needs properly.`;
+  }
+
+  if (/\b(service|services|offer|do you do|what can you do|capabilities)\b/i.test(text)) {
+    return 'We offer custom software development, cloud infrastructure and DevOps, cybersecurity and compliance, data engineering and analytics, IT consulting and strategy, managed IT support, CCTV installation, solar installation, and workflow automation.';
+  }
+
+  if (/\b(price|pricing|cost|how much|quote|estimate|plan|plans)\b/i.test(text)) {
+    return 'Our managed IT plans start at $499 per month for Starter and $1,299 per month for Growth, while Enterprise is custom-priced. For project-based work like software, cloud, cybersecurity, CCTV, solar, or automation, we usually scope your needs first and then provide a tailored quote.';
+  }
+
+  if (/\b(contact|email|phone|call you|reach you|address|location)\b/i.test(text)) {
+    return 'You can reach TriAxis at info@triaxistechnologies.com or call 0530848374 / 0593998578. We are based in Accra, Ghana.';
+  }
+
+  if (/\b(hello|hi|hey|good morning|good afternoon|good evening)\b/i.test(text)) {
+    return "Hi! I can help with our services, pricing, project inquiries, or booking a discovery call.";
+  }
+
+  return null;
+}
+
 async function saveLead() {
   if (lead.saved) return;
   lead.saved = true;
@@ -155,17 +203,49 @@ async function saveLead() {
 }
 
 function openCalendlyBooking() {
-  if (!window.Calendly?.initPopupWidget || !lead.name || !lead.email) return false;
+  const details = pendingBookingDetails || { name: lead.name, email: lead.email };
+  if (!window.Calendly?.initPopupWidget || !details.name || !details.email) return false;
 
   window.Calendly.initPopupWidget({
     url: `${CALENDLY_URL}?hide_gdpr_banner=1`,
     prefill: {
-      name: lead.name,
-      email: lead.email,
+      name: details.name,
+      email: details.email,
     },
   });
 
   return true;
+}
+
+function appendCalendlyAction() {
+  const log = document.getElementById('cb-log');
+  if (!log || !pendingBookingDetails?.name || !pendingBookingDetails?.email) return;
+  if (log.querySelector('[data-calendly-action="true"]')) return;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'cb-msg cb-msg--assistant';
+  const bubble = document.createElement('div');
+  bubble.className = 'cb-bubble';
+  bubble.innerHTML = `
+    <button
+      type="button"
+      data-calendly-action="true"
+      style="border:none;border-radius:999px;padding:12px 16px;background:#ff8b32;color:#fff;font:inherit;font-weight:700;cursor:pointer;"
+    >
+      Open booking calendar
+    </button>
+  `;
+
+  bubble.querySelector('[data-calendly-action="true"]')?.addEventListener('click', () => {
+    const opened = openCalendlyBooking();
+    if (!opened) {
+      window.open(CALENDLY_URL, '_blank', 'noopener');
+    }
+  });
+
+  wrap.appendChild(bubble);
+  log.appendChild(wrap);
+  log.scrollTop = log.scrollHeight;
 }
 
 async function handleLeadCollection(userText) {
@@ -211,6 +291,7 @@ async function handleLeadCollection(userText) {
     }
     leadStep = null;
     collectingLead = false;
+    pendingBookingDetails = { name: lead.name, email: lead.email };
     const bookingOpened = openCalendlyBooking();
     lead.preferred_time = bookingOpened ? '[Calendly popup opened]' : '[Calendly booking requested]';
     await saveLead();
@@ -221,8 +302,8 @@ async function handleLeadCollection(userText) {
     leadSource = null;
     saveChatState();
     return bookingOpened
-      ? `Perfect! I’ve opened our booking calendar for you, and your details should already be filled in. If the scheduler does not appear, email us at ${CALENDLY_FALLBACK_EMAIL} and we’ll arrange your session directly.`
-      : `Perfect! I have your details, but the booking window could not open on this device. Please email us at ${CALENDLY_FALLBACK_EMAIL} and we’ll arrange your session directly.`;
+      ? `Perfect! I’ve opened our booking calendar for you, and your details should already be filled in. If the scheduler does not appear, use the button below or email us at ${CALENDLY_FALLBACK_EMAIL}. ${CALENDLY_ACTION_MARKER}`
+      : `Perfect! I have your details, but the booking window could not open automatically on this device. Use the button below or email us at ${CALENDLY_FALLBACK_EMAIL}. ${CALENDLY_ACTION_MARKER}`;
   }
 
   if (leadStep === 'interest') {
@@ -265,6 +346,7 @@ function shouldPromptForLead(userText) {
 }
 
 async function getGroqResponse(userMessage) {
+  updateActiveTopic(userMessage);
   conversationHistory.push({ role: 'user', content: userMessage });
   saveChatState();
 
@@ -325,9 +407,18 @@ function appendMessage(role, text, persist = true) {
   bubble.innerHTML = role === 'assistant'
     ? text.replace(/</g, '&lt;').replace(/\n/g, '<br>')
     : text.replace(/</g, '&lt;');
+
+  if (role === 'assistant' && text.includes(CALENDLY_ACTION_MARKER)) {
+    bubble.innerHTML = bubble.innerHTML.replace(CALENDLY_ACTION_MARKER, '');
+  }
+
   wrap.appendChild(bubble);
   log.appendChild(wrap);
   log.scrollTop = log.scrollHeight;
+
+  if (role === 'assistant' && text.includes(CALENDLY_ACTION_MARKER)) {
+    appendCalendlyAction();
+  }
 
   if (persist) saveChatState();
 }
@@ -413,7 +504,8 @@ async function handleSend() {
     }
   } catch {
     setTyping(false);
-    const fallback = "Sorry, I'm having trouble connecting right now. Please reach us directly at info@triaxistechnologies.com or 0530848374 / 0593998578.";
+    const fallback = getLocalFallbackResponse(text)
+      || "Sorry, I'm having trouble connecting right now. Please reach us directly at info@triaxistechnologies.com or 0530848374 / 0593998578.";
     conversationHistory.push({ role: 'assistant', content: fallback });
     appendMessage('assistant', fallback);
   } finally {
