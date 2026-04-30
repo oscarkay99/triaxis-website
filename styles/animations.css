@@ -1,0 +1,33 @@
+/* ===== SCROLL ANIMATIONS ===== */
+
+.anim-up    { opacity: 0; transform: translateY(52px); }
+.anim-left  { opacity: 0; transform: translateX(-52px); }
+.anim-right { opacity: 0; transform: translateX(52px); }
+
+.anim-up,
+.anim-left,
+.anim-right {
+  transition: opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.72s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
+}
+
+.anim-up.revealed,
+.anim-left.revealed,
+.anim-right.revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* Respect system preference */
+@media (prefers-reduced-motion: reduce) {
+  .anim-up,
+  .anim-left,
+  .anim-right {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    will-change: auto;
+  }
+}

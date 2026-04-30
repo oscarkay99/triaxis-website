@@ -12,6 +12,7 @@ import './styles/faq.css';
 import './styles/contact.css';
 import './styles/footer.css';
 import './styles/responsive.css';
+import './styles/animations.css';
 import './styles/chatbot.css';
 import './styles/cookies-banner.css';
 
