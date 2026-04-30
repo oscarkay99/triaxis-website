@@ -34,7 +34,8 @@ Contact:
 
 Keep responses short and friendly. Use plain text — no markdown symbols like ** or ##. If someone asks for a calculation (e.g. annual savings, plan costs), compute it and give the exact answer.`;
 
-const CHATBOT_STORAGE_KEY = 'triaxis-chatbot-state-v1';
+const CHATBOT_STORAGE_KEY = 'triaxis-chatbot-state-v2';
+const CHATBOT_LEGACY_STORAGE_KEYS = ['triaxis-chatbot-state-v1'];
 const MAX_STORED_MESSAGES = 24;
 const MAX_CONTEXT_MESSAGES = 10;
 const MAX_SUMMARY_CHARS = 1400;
@@ -103,6 +104,14 @@ function saveChatState() {
 }
 
 function restoreChatState() {
+  CHATBOT_LEGACY_STORAGE_KEYS.forEach((key) => {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      // Ignore storage cleanup failures.
+    }
+  });
+
   const stored = safeJsonParse(localStorage.getItem(CHATBOT_STORAGE_KEY));
   if (!stored) return;
 
