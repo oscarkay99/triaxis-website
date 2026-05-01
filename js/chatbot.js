@@ -8,6 +8,7 @@ import {
 const GROQ_KEY = import.meta.env.VITE_GROQ_KEY; // only set in local dev
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const APPS_SCRIPT_URL = import.meta.env.VITE_APPS_SCRIPT_URL;
 
 const SYSTEM_PROMPT = `You are the virtual assistant for TriAxis IT Solutions, a professional IT company based in Accra, Ghana. Be helpful, concise, and professional. Only answer questions related to TriAxis or general IT topics relevant to the business. Do not discuss unrelated topics.
 
@@ -133,6 +134,23 @@ async function saveLead() {
   await supabase
     .from('chat_leads')
     .insert({ id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time });
+
+  // Email notification — fires for every lead, subject line flags booking requests
+  if (APPS_SCRIPT_URL) {
+    try {
+      const isBooking = (lead.preferred_time || '').startsWith('[Discovery Call Request]');
+      const fd = new FormData();
+      fd.append('source',  isBooking ? 'Discovery Call Request' : 'Chat Lead');
+      fd.append('name',    lead.name    || '');
+      fd.append('email',   lead.email   || '');
+      fd.append('company', lead.company || '');
+      fd.append('service', lead.service_interest   || '');
+      fd.append('project', lead.project_description || '');
+      fd.append('details', lead.preferred_time || '');
+      fetch(APPS_SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+    } catch { /* silent — never block the user flow */ }
+  }
+
   saveChatState();
 }
 
