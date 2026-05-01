@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from:    'TriAxis Notifications <onboarding@resend.dev>',
+        from:    'TriAxis Notifications <notifications@triaxistechnologies.com>',
         to:      [TO_EMAIL],
         subject,
         html,
