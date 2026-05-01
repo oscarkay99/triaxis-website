@@ -1,5 +1,4 @@
-const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY') ?? '';
-const NOTIFY_EMAIL   = 'info@triaxistechnologies.com';
+const APPS_SCRIPT_URL = Deno.env.get('APPS_SCRIPT_URL') ?? '';
 
 Deno.serve(async (req) => {
   try {
@@ -8,10 +7,9 @@ Deno.serve(async (req) => {
     if (!record) return new Response('No record', { status: 400 });
 
     const { name, email, preferred_time } = record;
-    const raw        = preferred_time ?? '';
-    const isBooking  = raw.startsWith('[Discovery Call Request]');
+    const raw = preferred_time ?? '';
 
-    // Parse "Key: Value" segments from the preferred_time string
+    // Parse "Key: Value" segments from preferred_time
     const parts: Record<string, string> = {};
     raw.split('|').forEach((seg: string) => {
       const colon = seg.indexOf(':');
@@ -20,44 +18,27 @@ Deno.serve(async (req) => {
       }
     });
 
-    const company = parts['Company'] || '—';
-    const service = parts['Service'] || '—';
-    const project = parts['Project'] || '—';
+    const company = parts['Company'] || '';
+    const service = parts['Service'] || '';
+    const project = parts['Project'] || '';
 
-    const subject = isBooking
-      ? `New Discovery Call Request — ${name}`
-      : `New Chat Lead — ${name}`;
-
-    const text = [
-      isBooking ? '=== DISCOVERY CALL REQUEST ===' : '=== CHAT LEAD ===',
-      '',
-      `Name:    ${name}`,
-      `Email:   ${email}`,
-      `Company: ${company}`,
-      `Service: ${service}`,
-      `Project: ${project}`,
-      '',
-      isBooking
-        ? 'ACTION REQUIRED: Review and send the Calendly link if approved:\nhttps://calendly.com/triaxistechnologies-info/30min'
-        : 'Info lead — follow up at your convenience.',
-    ].join('\n');
-
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: 'TriAxis Notifications <onboarding@resend.dev>',
-        to:   [NOTIFY_EMAIL],
-        subject,
-        text,
-      }),
+    // Call the existing Apps Script via URL-encoded form (matches e.parameter in doPost)
+    const body = new URLSearchParams({
+      name:    name    ?? '',
+      email:   email   ?? '',
+      company: company,
+      service: service,
+      project: project,
+      details: raw,
     });
 
-    const data = await res.json();
-    return new Response(JSON.stringify({ ok: true, resend: data }), {
+    await fetch(APPS_SCRIPT_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:    body.toString(),
+    });
+
+    return new Response(JSON.stringify({ ok: true }), {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (err) {
