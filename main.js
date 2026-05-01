@@ -13,6 +13,7 @@ import './styles/contact.css';
 import './styles/footer.css';
 import './styles/responsive.css';
 import './styles/animations.css';
+import './styles/effects-3d.css';
 import './styles/chatbot.css';
 import './styles/cookies-banner.css';
 
@@ -27,3 +28,4 @@ import './js/contact.js';
 import './js/animations.js';
 import './js/chatbot.js';
 import './js/cookies-banner.js';
+import './js/effects-3d.js';

@@ -1,0 +1,57 @@
+/* ===== 3D EFFECTS ===== */
+
+/* Cards need perspective context */
+.service-card,
+.portfolio-card,
+.team-card,
+.pricing-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Gloss overlay that follows the mouse */
+.card-gloss {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 5;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 65%);
+}
+.service-card:hover  .card-gloss,
+.portfolio-card:hover .card-gloss,
+.team-card:hover     .card-gloss,
+.pricing-card:hover  .card-gloss { opacity: 1; }
+
+/* Smooth hero layer transitions */
+.hero-badge,
+.hero-content h1,
+.hero-content p,
+.hero-buttons {
+  will-change: transform;
+  transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Floating bob on the about badge */
+@keyframes floatBob {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+.about-badge {
+  animation: floatBob 4s ease-in-out infinite;
+}
+
+/* Reduced motion — kill everything */
+@media (prefers-reduced-motion: reduce) {
+  .hero-badge,
+  .hero-content h1,
+  .hero-content p,
+  .hero-buttons { transition: none; will-change: auto; }
+  .about-badge  { animation: none; }
+  .service-card,
+  .portfolio-card,
+  .team-card,
+  .pricing-card { transform-style: flat; will-change: auto; }
+}
