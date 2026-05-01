@@ -1,6 +1,6 @@
 /* ===== 3D EFFECTS ===== */
 
-/* Cards need position context for gloss + JS handles hover lift */
+/* Cards: 3D context, no overflow clipping so layers can float forward */
 .service-card,
 .portfolio-card,
 .team-card,
@@ -8,9 +8,10 @@
   position: relative;
   transform-style: preserve-3d;
   will-change: transform;
+  overflow: visible;
 }
 
-/* Disable CSS hover transforms — JS 3D tilt replaces them */
+/* Disable CSS hover lift — JS 3D tilt replaces it */
 .service-card:hover,
 .portfolio-card:hover,
 .team-card:hover,
@@ -18,16 +19,23 @@
   transform: none;
 }
 
-/* Gloss overlay that follows the mouse */
+/* All direct children participate in the 3D space */
+.service-card > *,
+.portfolio-card > *,
+.team-card > *,
+.pricing-card > * {
+  transform-style: preserve-3d;
+}
+
+/* Gloss overlay — always on top of other layers */
 .card-gloss {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  z-index: 5;
   opacity: 0;
   transition: opacity 0.3s;
-  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 65%);
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 60%);
 }
 .service-card:hover  .card-gloss,
 .portfolio-card:hover .card-gloss,
@@ -62,5 +70,5 @@
   .service-card,
   .portfolio-card,
   .team-card,
-  .pricing-card { transform-style: flat; will-change: auto; }
+  .pricing-card { transform-style: flat; will-change: auto; overflow: hidden; }
 }
