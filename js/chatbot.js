@@ -229,7 +229,7 @@ async function handleLeadCollection(userText) {
     // schedule flow — collect more details before submitting
     leadStep = ‘company’;
     saveChatState();
-    return `Thanks! What company or organisation are you with? (Type "Personal" if this is for yourself individually.)`;
+    return `Thanks! Are you reaching out on behalf of a company or organisation, or as an individual?`;
   }
 
   if (leadStep === ‘company’) {
