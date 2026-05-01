@@ -1,6 +1,7 @@
 // ===== 3D EFFECTS =====
 
-if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   // ---- Card 3D tilt + gloss ----
   const TILT_MAX  = 10;   // max rotation degrees
@@ -32,7 +33,6 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         card.style.boxShadow =
           `0 ${20 + Math.abs(rX)}px 48px rgba(0,45,85,0.22)`;
 
-        // Move gloss to cursor position
         gloss.style.background =
           `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 65%)`;
       });
@@ -62,8 +62,7 @@ if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     });
   });
 
-  // Reset layers when mouse leaves the window
   document.addEventListener('mouseleave', () => {
     layers.forEach(({ el }) => { el.style.transform = ''; });
   });
-}
+});

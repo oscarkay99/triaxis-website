@@ -1,12 +1,21 @@
 /* ===== 3D EFFECTS ===== */
 
-/* Cards need perspective context */
+/* Cards need position context for gloss + JS handles hover lift */
 .service-card,
 .portfolio-card,
 .team-card,
 .pricing-card {
+  position: relative;
   transform-style: preserve-3d;
   will-change: transform;
+}
+
+/* Disable CSS hover transforms — JS 3D tilt replaces them */
+.service-card:hover,
+.portfolio-card:hover,
+.team-card:hover,
+.pricing-card:hover {
+  transform: none;
 }
 
 /* Gloss overlay that follows the mouse */
