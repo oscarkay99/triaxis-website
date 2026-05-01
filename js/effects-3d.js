@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const rX = ((y - r.height / 2) / (r.height / 2)) * -TILT;
         const rY = ((x - r.width  / 2) / (r.width  / 2)) *  TILT;
 
-        card.style.transform =
+        card.style.transition = 'transform 0.15s ease, box-shadow 0.15s ease';
+        card.style.transform  =
           `perspective(${PERSP}px) rotateX(${rX}deg) rotateY(${rY}deg)`;
 
         gloss.style.background =
@@ -34,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-  // ---- Hero depth layers (mouse parallax) ----
+  // ---- Hero depth parallax — activated after scroll animations finish ----
   const layers = [
     { el: document.querySelector('.hero-badge'),       depth: 0.018 },
     { el: document.querySelector('.hero-content h1'),  depth: 0.010 },
@@ -42,16 +43,23 @@ document.addEventListener('DOMContentLoaded', () => {
     { el: document.querySelector('.hero-buttons'),     depth: 0.003 },
   ].filter(l => l.el);
 
-  document.addEventListener('mousemove', e => {
-    if (window.innerWidth <= 900) return;
-    const dx = e.clientX - window.innerWidth  / 2;
-    const dy = e.clientY - window.innerHeight / 2;
-    layers.forEach(({ el, depth }) => {
-      el.style.transform = `translate(${dx * depth}px, ${dy * depth}px)`;
+  // Delay so hero scroll-reveal animations finish before we touch transforms
+  setTimeout(() => {
+    document.addEventListener('mousemove', e => {
+      if (window.innerWidth <= 900) return;
+      const dx = e.clientX - window.innerWidth  / 2;
+      const dy = e.clientY - window.innerHeight / 2;
+      layers.forEach(({ el, depth }) => {
+        el.style.transition = 'transform 0.2s cubic-bezier(0.23,1,0.32,1)';
+        el.style.transform  = `translate(${dx * depth}px, ${dy * depth}px)`;
+      });
     });
-  });
 
-  document.addEventListener('mouseleave', () => {
-    layers.forEach(({ el }) => { el.style.transform = ''; });
-  });
+    document.addEventListener('mouseleave', () => {
+      layers.forEach(({ el }) => {
+        el.style.transition = 'transform 0.4s cubic-bezier(0.23,1,0.32,1)';
+        el.style.transform  = '';
+      });
+    });
+  }, 1200); // wait for hero reveal animations (~720ms + stagger)
 });

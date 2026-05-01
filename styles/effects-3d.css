@@ -1,14 +1,14 @@
 /* ===== 3D EFFECTS ===== */
 
+/* Cards need relative positioning for the gloss overlay */
 .service-card,
 .portfolio-card,
 .team-card,
 .pricing-card {
   position: relative;
-  will-change: transform;
 }
 
-/* JS handles the hover lift — remove CSS version */
+/* JS handles hover transform — disable the CSS version */
 .service-card:hover,
 .portfolio-card:hover,
 .team-card:hover,
@@ -16,7 +16,7 @@
   transform: none;
 }
 
-/* Gloss overlay */
+/* Gloss overlay injected by JS */
 .card-gloss {
   position: absolute;
   inset: 0;
@@ -31,16 +31,7 @@
 .team-card:hover     .card-gloss,
 .pricing-card:hover  .card-gloss { opacity: 1; }
 
-/* Hero parallax elements */
-.hero-badge,
-.hero-content h1,
-.hero-content p,
-.hero-buttons {
-  will-change: transform;
-  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-/* Floating bob on the about badge */
+/* About badge float */
 @keyframes floatBob {
   0%, 100% { transform: translateY(0); }
   50%       { transform: translateY(-10px); }
@@ -49,15 +40,6 @@
   animation: floatBob 4s ease-in-out infinite;
 }
 
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .hero-badge,
-  .hero-content h1,
-  .hero-content p,
-  .hero-buttons { transition: none; will-change: auto; }
-  .about-badge  { animation: none; }
-  .service-card,
-  .portfolio-card,
-  .team-card,
-  .pricing-card { will-change: auto; }
+  .about-badge { animation: none; }
 }
