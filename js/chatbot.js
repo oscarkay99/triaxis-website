@@ -49,10 +49,10 @@ const CALENDLY_ACTION_MARKER = '__triaxis_calendly_action__';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const conversationHistory = [];
-const lead = { name: null, email: null, preferred_time: null, saved: false };
+const lead = { name: null, email: null, company: null, service_interest: null, project_description: null, preferred_time: null, saved: false };
 
 let collectingLead = false;
-let leadStep = null; // 'name' | 'email' | 'time' | 'interest'
+let leadStep = null; // 'name' | 'email' | 'company' | 'service' | 'project' | 'interest'
 let leadSource = null; // 'schedule' | 'info'
 let infoInterestDetected = false;
 let lastSendTime = 0;
@@ -82,6 +82,9 @@ function restoreChatState() {
   conversationHistory.splice(0, conversationHistory.length);
   lead.name = null;
   lead.email = null;
+  lead.company = null;
+  lead.service_interest = null;
+  lead.project_description = null;
   lead.preferred_time = null;
   lead.saved = false;
   collectingLead = false;
@@ -117,7 +120,7 @@ function getLocalFallbackResponse(userText) {
   updateActiveTopic(text);
 
   if (wantsToSchedule(text)) {
-    return "I can help with that. If you'd like to book a session, tell me you'd like to schedule a call and I'll collect your name and email before opening the booking calendar.";
+    return "I can help with that! Just tell me you'd like to schedule a discovery call and I'll collect a few quick details to pass on to the team.";
   }
   return getKnowledgeFallbackAnswer(text, conversationHistory, activeTopic);
 }
@@ -212,35 +215,57 @@ async function handleLeadCollection(userText) {
     return `Thanks, ${lead.name.split(' ')[0]}! What's your email address?`;
   }
 
-  if (leadStep === 'email') {
+  if (leadStep === ‘email’) {
     const trimmed = userText.trim();
     if (!EMAIL_RE.test(trimmed)) {
-      return "That doesn't look like a valid email. Please try again.";
+      return "That doesn’t look like a valid email. Please try again.";
     }
     lead.email = trimmed;
-    if (leadSource === 'info') {
-      leadStep = 'interest';
+    if (leadSource === ‘info’) {
+      leadStep = ‘interest’;
       saveChatState();
-      return 'Perfect! What service or solution are you most interested in?';
+      return ‘Perfect! What service or solution are you most interested in?’;
     }
+    // schedule flow — collect more details before submitting
+    leadStep = ‘company’;
+    saveChatState();
+    return `Thanks! What company or organisation are you with? (Type "Personal" if this is for yourself individually.)`;
+  }
+
+  if (leadStep === ‘company’) {
+    lead.company = userText.trim() || ‘Not specified’;
+    leadStep = ‘service’;
+    saveChatState();
+    return ‘Which of our services are you most interested in? For example: Software Development, Cloud Infrastructure, Cybersecurity, CCTV Installation, Solar, IT Support, Workflow Automation — or something else entirely.’;
+  }
+
+  if (leadStep === ‘service’) {
+    lead.service_interest = userText.trim();
+    leadStep = ‘project’;
+    saveChatState();
+    return "Almost done! Briefly describe what you need help with or the problem you’re trying to solve — just 1 or 2 sentences is fine.";
+  }
+
+  if (leadStep === ‘project’) {
+    lead.project_description = userText.trim();
+    const confirmedEmail = lead.email;
+    lead.preferred_time = `[Discovery Call Request] | Company: ${lead.company} | Service: ${lead.service_interest} | Project: ${lead.project_description}`;
     leadStep = null;
     collectingLead = false;
-    pendingBookingDetails = { name: lead.name, email: lead.email };
-    const bookingOpened = openCalendlyBooking();
-    lead.preferred_time = bookingOpened ? '[Calendly popup opened]' : '[Calendly booking requested]';
     await saveLead();
     lead.name = null;
     lead.email = null;
+    lead.company = null;
+    lead.service_interest = null;
+    lead.project_description = null;
     lead.preferred_time = null;
     lead.saved = false;
     leadSource = null;
     saveChatState();
-    return bookingOpened
-      ? `Perfect! I’ve opened our booking calendar for you, and your details should already be filled in. If the scheduler does not appear, use the button below or email us at ${CALENDLY_FALLBACK_EMAIL}. ${CALENDLY_ACTION_MARKER}`
-      : `Perfect! I have your details, but the booking window could not open automatically on this device. Use the button below or email us at ${CALENDLY_FALLBACK_EMAIL}. ${CALENDLY_ACTION_MARKER}`;
+    return `Thank you! Your discovery call request has been submitted. Our team will review your details and, if it’s a good fit, we’ll send a booking link to ${confirmedEmail} within 24 hours. Is there anything else I can help you with?`;
   }
 
-  if (leadStep === 'interest') {
+  if (leadStep === ‘interest’) {
     lead.preferred_time = `[Info request] ${userText.trim()}`;
     const confirmedEmail = lead.email;
     await saveLead();
@@ -252,22 +277,7 @@ async function handleLeadCollection(userText) {
     leadStep = null;
     leadSource = null;
     saveChatState();
-    return `Great! I've passed your details to the TriAxis team and they'll reach out to you at ${confirmedEmail} shortly. Is there anything else I can help with?`;
-  }
-
-  if (leadStep === 'time') {
-    lead.preferred_time = userText.trim();
-    const confirmedEmail = lead.email;
-    await saveLead();
-    lead.name = null;
-    lead.email = null;
-    lead.preferred_time = null;
-    lead.saved = false;
-    collectingLead = false;
-    leadStep = null;
-    leadSource = null;
-    saveChatState();
-    return `Perfect! Your request has been sent to the TriAxis team. They'll review it and send a confirmation to ${confirmedEmail}. Is there anything else I can help you with?`;
+    return `Great! I’ve passed your details to the TriAxis team and they’ll reach out to you at ${confirmedEmail} shortly. Is there anything else I can help with?`;
   }
 
   return null;

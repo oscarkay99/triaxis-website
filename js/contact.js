@@ -1,14 +1,15 @@
 import { supabase } from './supabase.js';
 
-const CALENDLY_URL = 'https://calendly.com/triaxistechnologies-info/30min?hide_gdpr_banner=1';
 
 const scheduleBtn = document.getElementById('scheduleCallBtn');
 if (scheduleBtn) {
   scheduleBtn.addEventListener('click', () => {
-    if (window.Calendly?.initPopupWidget) {
-      window.Calendly.initPopupWidget({ url: CALENDLY_URL });
-    } else {
-      window.open('https://calendly.com/triaxistechnologies-info/30min', '_blank', 'noopener');
+    const serviceEl = document.getElementById('service');
+    if (serviceEl) serviceEl.value = 'discovery-call';
+    const nameEl = document.getElementById('fullName');
+    if (nameEl) {
+      nameEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => nameEl.focus(), 400);
     }
   });
 }
