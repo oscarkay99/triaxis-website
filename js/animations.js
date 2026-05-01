@@ -69,31 +69,4 @@ if (!reducedMotion) {
   registerAll('.footer-col', 'anim-up', true);
 }
 
-// ---- Hero parallax (desktop only) ----
-const hero = document.querySelector('.hero');
-
-if (hero && !reducedMotion) {
-  let ticking = false;
-
-  const applyParallax = () => {
-    if (window.innerWidth <= 900) {
-      hero.style.backgroundPositionY = '';
-      ticking = false;
-      return;
-    }
-    const scrolled = window.scrollY;
-    if (scrolled < hero.offsetHeight * 1.4) {
-      hero.style.backgroundPositionY = `calc(50% + ${scrolled * 0.38}px)`;
-    }
-    ticking = false;
-  };
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(applyParallax);
-      ticking = true;
-    }
-  }, { passive: true });
-
-  window.addEventListener('resize', applyParallax, { passive: true });
-}
+// Hero background parallax is handled by js/parallax.js

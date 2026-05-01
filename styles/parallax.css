@@ -1,0 +1,138 @@
+/* ===== WORLD-CLASS PARALLAX ===== */
+
+/* --- Hero dot-grid texture --- */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px);
+  background-size: 42px 42px;
+  pointer-events: none;
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 78%, transparent 100%);
+  mask-image:         linear-gradient(to bottom, transparent 0%, black 18%, black 78%, transparent 100%);
+}
+
+/* --- Hero floating orbs --- */
+.hero-orbs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform;
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  animation: orbFloat var(--orb-dur, 10s) ease-in-out infinite alternate;
+}
+
+.hero-orb--1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(244,122,32,0.38) 0%, transparent 70%);
+  top: -8%; right: 2%;
+  --orb-dur: 9s;
+  opacity: 0.85;
+}
+
+.hero-orb--2 {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(10,80,170,0.42) 0%, transparent 70%);
+  top: 38%; left: -2%;
+  --orb-dur: 13s;
+  animation-delay: -5s;
+  opacity: 0.7;
+}
+
+.hero-orb--3 {
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(255,176,106,0.55) 0%, transparent 70%);
+  bottom: 18%; right: 18%;
+  --orb-dur: 11s;
+  animation-delay: -3s;
+  opacity: 0.65;
+}
+
+.hero-orb--4 {
+  width: 640px; height: 640px;
+  background: radial-gradient(circle, rgba(0,45,85,0.55) 0%, rgba(2,18,44,0.28) 55%, transparent 75%);
+  top: 22%; left: 20%;
+  --orb-dur: 17s;
+  animation-delay: -9s;
+  opacity: 1;
+}
+
+@keyframes orbFloat {
+  from { transform: translate(0, 0)     scale(1); }
+  to   { transform: translate(14px, -24px) scale(1.06); }
+}
+
+/* --- Hero light beam --- */
+.hero-beam {
+  position: absolute;
+  top: -60%;
+  left: -35%;
+  width: 42%;
+  height: 220%;
+  background: linear-gradient(
+    108deg,
+    transparent 36%,
+    rgba(255,255,255,0.022) 50%,
+    transparent 64%
+  );
+  animation: beamSweep 16s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes beamSweep {
+  from { transform: translateX(0); }
+  to   { transform: translateX(400%); }
+}
+
+/* --- Card image parallax headroom (desktop) --- */
+@media (min-width: 769px) {
+  .service-img-wrap,
+  .portfolio-img-wrap {
+    overflow: hidden;
+  }
+
+  .service-img-wrap img,
+  .portfolio-img-wrap img {
+    transform: scale(1.14);
+    transition: none !important; /* JS owns this transform */
+    will-change: transform;
+  }
+
+  .about-img {
+    will-change: transform;
+    transition: none !important;
+  }
+}
+
+/* --- Smooth button transform base --- */
+.btn {
+  will-change: transform;
+}
+
+/* --- Reduced motion: kill everything --- */
+@media (prefers-reduced-motion: reduce) {
+  .hero-orb,
+  .hero-beam {
+    animation: none !important;
+  }
+
+  .hero::before {
+    display: none;
+  }
+
+  .service-img-wrap img,
+  .portfolio-img-wrap img,
+  .about-img {
+    transform: none !important;
+    transition: transform 0.4s ease !important;
+    will-change: auto !important;
+  }
+}

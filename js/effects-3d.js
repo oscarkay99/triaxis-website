@@ -35,31 +35,5 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-  // ---- Hero depth parallax — activated after scroll animations finish ----
-  const layers = [
-    { el: document.querySelector('.hero-badge'),       depth: 0.018 },
-    { el: document.querySelector('.hero-content h1'),  depth: 0.010 },
-    { el: document.querySelector('.hero-content p'),   depth: 0.006 },
-    { el: document.querySelector('.hero-buttons'),     depth: 0.003 },
-  ].filter(l => l.el);
-
-  // Delay so hero scroll-reveal animations finish before we touch transforms
-  setTimeout(() => {
-    document.addEventListener('mousemove', e => {
-      if (window.innerWidth <= 900) return;
-      const dx = e.clientX - window.innerWidth  / 2;
-      const dy = e.clientY - window.innerHeight / 2;
-      layers.forEach(({ el, depth }) => {
-        el.style.transition = 'transform 0.2s cubic-bezier(0.23,1,0.32,1)';
-        el.style.transform  = `translate(${dx * depth}px, ${dy * depth}px)`;
-      });
-    });
-
-    document.addEventListener('mouseleave', () => {
-      layers.forEach(({ el }) => {
-        el.style.transition = 'transform 0.4s cubic-bezier(0.23,1,0.32,1)';
-        el.style.transform  = '';
-      });
-    });
-  }, 1200); // wait for hero reveal animations (~720ms + stagger)
+  // Hero mouse parallax is handled by js/parallax.js (combined with scroll)
 });
