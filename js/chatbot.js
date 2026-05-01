@@ -215,38 +215,38 @@ async function handleLeadCollection(userText) {
     return `Thanks, ${lead.name.split(' ')[0]}! What's your email address?`;
   }
 
-  if (leadStep === ‘email’) {
+  if (leadStep === 'email') {
     const trimmed = userText.trim();
     if (!EMAIL_RE.test(trimmed)) {
-      return "That doesn’t look like a valid email. Please try again.";
+      return "That doesn't look like a valid email. Please try again.";
     }
     lead.email = trimmed;
-    if (leadSource === ‘info’) {
-      leadStep = ‘interest’;
+    if (leadSource === 'info') {
+      leadStep = 'interest';
       saveChatState();
-      return ‘Perfect! What service or solution are you most interested in?’;
+      return 'Perfect! What service or solution are you most interested in?';
     }
     // schedule flow — collect more details before submitting
-    leadStep = ‘company’;
+    leadStep = 'company';
     saveChatState();
     return `Thanks! Are you reaching out on behalf of a company or organisation, or as an individual?`;
   }
 
-  if (leadStep === ‘company’) {
-    lead.company = userText.trim() || ‘Not specified’;
-    leadStep = ‘service’;
+  if (leadStep === 'company') {
+    lead.company = userText.trim() || 'Not specified';
+    leadStep = 'service';
     saveChatState();
-    return ‘Which of our services are you most interested in? For example: Software Development, Cloud Infrastructure, Cybersecurity, CCTV Installation, Solar, IT Support, Workflow Automation — or something else entirely.’;
+    return 'Which of our services are you most interested in? For example: Software Development, Cloud Infrastructure, Cybersecurity, CCTV Installation, Solar, IT Support, Workflow Automation — or something else entirely.';
   }
 
-  if (leadStep === ‘service’) {
+  if (leadStep === 'service') {
     lead.service_interest = userText.trim();
-    leadStep = ‘project’;
+    leadStep = 'project';
     saveChatState();
-    return "Almost done! Briefly describe what you need help with or the problem you’re trying to solve — just 1 or 2 sentences is fine.";
+    return "Almost done! Briefly describe what you need help with or the problem you're trying to solve — just 1 or 2 sentences is fine.";
   }
 
-  if (leadStep === ‘project’) {
+  if (leadStep === 'project') {
     lead.project_description = userText.trim();
     const confirmedEmail = lead.email;
     lead.preferred_time = `[Discovery Call Request] | Company: ${lead.company} | Service: ${lead.service_interest} | Project: ${lead.project_description}`;
@@ -262,10 +262,10 @@ async function handleLeadCollection(userText) {
     lead.saved = false;
     leadSource = null;
     saveChatState();
-    return `Thank you! Your discovery call request has been submitted. Our team will review your details and, if it’s a good fit, we’ll send a booking link to ${confirmedEmail} within 24 hours. Is there anything else I can help you with?`;
+    return `Thank you! Your discovery call request has been submitted. Our team will review your details and, if it's a good fit, we'll send a booking link to ${confirmedEmail} within 24 hours. Is there anything else I can help you with?`;
   }
 
-  if (leadStep === ‘interest’) {
+  if (leadStep === 'interest') {
     lead.preferred_time = `[Info request] ${userText.trim()}`;
     const confirmedEmail = lead.email;
     await saveLead();
@@ -277,7 +277,7 @@ async function handleLeadCollection(userText) {
     leadStep = null;
     leadSource = null;
     saveChatState();
-    return `Great! I’ve passed your details to the TriAxis team and they’ll reach out to you at ${confirmedEmail} shortly. Is there anything else I can help with?`;
+    return `Great! I've passed your details to the TriAxis team and they'll reach out to you at ${confirmedEmail} shortly. Is there anything else I can help with?`;
   }
 
   return null;
