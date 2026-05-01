@@ -5,10 +5,9 @@ import {
   getKnowledgeFallbackAnswer,
 } from './chatbot-knowledge.js';
 
-const GROQ_KEY         = import.meta.env.VITE_GROQ_KEY;
-const SUPABASE_URL     = import.meta.env.VITE_SUPABASE_URL;
+const GROQ_KEY          = import.meta.env.VITE_GROQ_KEY;
+const SUPABASE_URL      = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const APPS_SCRIPT_URL  = import.meta.env.VITE_APPS_SCRIPT_URL;
 
 const SYSTEM_PROMPT = `You are the virtual assistant for TriAxis IT Solutions, a professional IT company based in Accra, Ghana. Be helpful, concise, and professional. Only answer questions related to TriAxis or general IT topics relevant to the business. Do not discuss unrelated topics.
 
@@ -134,20 +133,6 @@ async function saveLead() {
   await supabase
     .from('chat_leads')
     .insert({ id, name: lead.name, email: lead.email, preferred_time: lead.preferred_time });
-
-  // Notify team via Apps Script (Supabase Edge Function webhook is the long-term plan)
-  if (APPS_SCRIPT_URL) {
-    try {
-      const fd = new FormData();
-      fd.append('name',    lead.name    || '');
-      fd.append('email',   lead.email   || '');
-      fd.append('company', lead.company || '');
-      fd.append('service', lead.service_interest    || '');
-      fd.append('project', lead.project_description || '');
-      fd.append('details', lead.preferred_time      || '');
-      fetch(APPS_SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
-    } catch { /* never block the user */ }
-  }
 
   saveChatState();
 }
