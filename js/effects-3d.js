@@ -3,23 +3,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  // ---- Card 3D tilt + layered depth ----
-  const TILT_MAX = 14;
-  const PERSP    = 700;
-  const LIFT     = 18;
-
-  // Each layer pops forward a different amount, creating real depth
-  const DEPTH_LAYERS = [
-    { sel: '.service-img-wrap, .portfolio-img-wrap', z: 52 },
-    { sel: '.service-icon',                          z: 34 },
-    { sel: 'h3, h4',                                 z: 22 },
-    { sel: '.team-role, .plan-name',                 z: 18 },
-    { sel: 'p',                                      z: 12 },
-    { sel: '.service-tags, .plan-price, .features',  z:  7 },
-  ];
-
-  const ENTER_T = 'transform 0.12s ease';
-  const LEAVE_T = 'transform 0.55s cubic-bezier(0.23,1,0.32,1)';
+  const TILT  = 7;     // max rotation degrees — subtle, not dramatic
+  const PERSP = 1000;  // high value = gentle perspective
 
   document.querySelectorAll('.service-card, .portfolio-card, .team-card, .pricing-card')
     .forEach(card => {
@@ -27,11 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
       gloss.className = 'card-gloss';
       card.appendChild(gloss);
 
+      // Image inside the card — parallaxes opposite to tilt (window-depth illusion)
+      const img = card.querySelector('.service-img-wrap img, .portfolio-img-wrap img');
+
       card.addEventListener('mouseenter', () => {
-        card.style.transition = 'transform 0.12s ease, box-shadow 0.12s ease';
-        DEPTH_LAYERS.forEach(({ sel }) =>
-          card.querySelectorAll(sel).forEach(el => { el.style.transition = ENTER_T; })
-        );
+        card.style.transition = 'transform 0.15s ease, box-shadow 0.15s ease';
       });
 
       card.addEventListener('mousemove', e => {
@@ -40,49 +25,41 @@ document.addEventListener('DOMContentLoaded', () => {
         const y  = e.clientY - r.top;
         const cx = r.width  / 2;
         const cy = r.height / 2;
-        const rX = ((y - cy) / cy) * -TILT_MAX;
-        const rY = ((x - cx) / cx) *  TILT_MAX;
+        const rX = ((y - cy) / cy) * -TILT;
+        const rY = ((x - cx) / cx) *  TILT;
 
         card.style.transform =
-          `perspective(${PERSP}px) rotateX(${rX}deg) rotateY(${rY}deg) translateZ(${LIFT}px)`;
+          `perspective(${PERSP}px) rotateX(${rX}deg) rotateY(${rY}deg) translateY(-4px)`;
         card.style.boxShadow =
-          `${-rY * 2}px ${rX * 2 + 24}px 56px rgba(0,45,85,0.28)`;
+          `${-rY * 1.2}px ${Math.abs(rX) * 1.2 + 16}px 40px rgba(0,45,85,0.18)`;
 
-        // Push each layer forward at its own Z depth
-        DEPTH_LAYERS.forEach(({ sel, z }) =>
-          card.querySelectorAll(sel).forEach(el => {
-            el.style.transform = `translateZ(${z}px)`;
-          })
-        );
+        // Image drifts opposite the tilt — creates depth without Z-translation
+        if (img) {
+          img.style.transform = `scale(1.06) translate(${rY * -0.4}px, ${rX * 0.4}px)`;
+        }
 
-        // Gloss sits above everything
-        gloss.style.transform  = 'translateZ(60px)';
         gloss.style.background =
-          `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 60%)`;
+          `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 58%)`;
       });
 
       card.addEventListener('mouseleave', () => {
-        card.style.transition = 'transform 0.55s cubic-bezier(0.23,1,0.32,1), box-shadow 0.55s ease';
+        card.style.transition = 'transform 0.5s cubic-bezier(0.23,1,0.32,1), box-shadow 0.5s ease';
         card.style.transform  = '';
         card.style.boxShadow  = '';
-        gloss.style.transform  = '';
         gloss.style.background = '';
-
-        DEPTH_LAYERS.forEach(({ sel }) =>
-          card.querySelectorAll(sel).forEach(el => {
-            el.style.transition = LEAVE_T;
-            el.style.transform  = '';
-          })
-        );
+        if (img) {
+          img.style.transition = 'transform 0.5s cubic-bezier(0.23,1,0.32,1)';
+          img.style.transform  = '';
+        }
       });
     });
 
   // ---- Hero depth layers (mouse parallax) ----
   const layers = [
-    { el: document.querySelector('.hero-badge'),       depth: 0.030 },
-    { el: document.querySelector('.hero-content h1'),  depth: 0.018 },
-    { el: document.querySelector('.hero-content p'),   depth: 0.010 },
-    { el: document.querySelector('.hero-buttons'),     depth: 0.005 },
+    { el: document.querySelector('.hero-badge'),       depth: 0.025 },
+    { el: document.querySelector('.hero-content h1'),  depth: 0.014 },
+    { el: document.querySelector('.hero-content p'),   depth: 0.008 },
+    { el: document.querySelector('.hero-buttons'),     depth: 0.004 },
   ].filter(l => l.el);
 
   document.addEventListener('mousemove', e => {

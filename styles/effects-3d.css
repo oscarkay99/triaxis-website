@@ -1,17 +1,14 @@
 /* ===== 3D EFFECTS ===== */
 
-/* Cards: 3D context, no overflow clipping so layers can float forward */
 .service-card,
 .portfolio-card,
 .team-card,
 .pricing-card {
   position: relative;
-  transform-style: preserve-3d;
   will-change: transform;
-  overflow: visible;
 }
 
-/* Disable CSS hover lift — JS 3D tilt replaces it */
+/* JS handles the hover lift — remove CSS version */
 .service-card:hover,
 .portfolio-card:hover,
 .team-card:hover,
@@ -19,36 +16,28 @@
   transform: none;
 }
 
-/* All direct children participate in the 3D space */
-.service-card > *,
-.portfolio-card > *,
-.team-card > *,
-.pricing-card > * {
-  transform-style: preserve-3d;
-}
-
-/* Gloss overlay — always on top of other layers */
+/* Gloss overlay */
 .card-gloss {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
+  z-index: 5;
   opacity: 0;
   transition: opacity 0.3s;
-  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 60%);
 }
 .service-card:hover  .card-gloss,
 .portfolio-card:hover .card-gloss,
 .team-card:hover     .card-gloss,
 .pricing-card:hover  .card-gloss { opacity: 1; }
 
-/* Smooth hero layer transitions */
+/* Hero parallax elements */
 .hero-badge,
 .hero-content h1,
 .hero-content p,
 .hero-buttons {
   will-change: transform;
-  transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /* Floating bob on the about badge */
@@ -60,7 +49,7 @@
   animation: floatBob 4s ease-in-out infinite;
 }
 
-/* Reduced motion — kill everything */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .hero-badge,
   .hero-content h1,
@@ -70,5 +59,5 @@
   .service-card,
   .portfolio-card,
   .team-card,
-  .pricing-card { transform-style: flat; will-change: auto; overflow: hidden; }
+  .pricing-card { will-change: auto; }
 }
