@@ -137,6 +137,9 @@ function openCalendlyBooking() {
   const details = pendingBookingDetails || { name: lead.name, email: lead.email };
   if (!window.Calendly?.initPopupWidget || !details.name || !details.email) return false;
 
+  // Close chatbot window so the Calendly popup is fully visible
+  document.getElementById('cb-window')?.classList.remove('cb-window--open');
+
   window.Calendly.initPopupWidget({
     url: `${CALENDLY_URL}?hide_gdpr_banner=1`,
     prefill: {
